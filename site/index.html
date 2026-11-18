@@ -6,14 +6,19 @@
   <title>Gabrielli Costa | Clínica de estética</title>
   <meta name="description" content="Gabrielli Costa: estética e nail design com atenção a cada detalhe. Conheça a clínica, veja como chegar e agende seu horário.">
   <meta name="theme-color" content="#4B0F1E">
+  <meta name="color-scheme" content="dark">
+  <meta name="format-detection" content="telephone=no, address=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/favicon.png">
 
   <link rel="preload" href="assets/fonts/cormorant-upright-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="studio.css">
 
   <script src="assets/vendor/gsap.min.js" defer></script>
   <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
@@ -24,10 +29,11 @@
 <body>
   <a class="skip-link" href="#acessos">Ir para o conteúdo</a>
 
-  <!-- Preloader: vídeo de tinta (sem loop: toca inteiro) + transição em tinta (ver script.js) -->
+  <!-- Preloader: vídeo de tinta (sem loop) + transição em tinta (ver script.js) -->
   <div class="preloader" aria-hidden="true">
     <video class="preloader__video" src="assets/preloader.mp4"
-           autoplay muted playsinline preload="auto" disablepictureinpicture></video>
+           autoplay muted playsinline webkit-playsinline preload="auto"
+           disablepictureinpicture disableremoteplayback></video>
     <div class="preloader__vignette"></div>
     <img class="preloader__logo" src="assets/img/logo-mark.png" alt="" width="40" height="41">
   </div>
@@ -58,7 +64,7 @@
     <!-- HERO: vídeo controlado pelo scroll -->
     <!-- Para o vídeo leve no celular, crie assets/hero-720.mp4 e acrescente data-src-mobile="assets/hero-720.mp4" na tag <video> -->
     <section class="hero" id="inicio" aria-label="Apresentação">
-      <video class="hero__video" muted playsinline preload="auto" tabindex="-1" aria-hidden="true"
+      <video class="hero__video" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true"
              disablepictureinpicture disableremoteplayback>
         <source src="assets/hero.mp4" type="video/mp4">
       </video>
@@ -98,7 +104,7 @@
 
         <li class="path path--2">
           <!-- TROCAR: consulta do Google Maps (query = endereço completo, com espaços como +) -->
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Endere%C3%A7o+da+cl%C3%ADnica" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Oscar+Sim%C3%B5es+de+Carvalho+10+Itanha%C3%A9m+SP" target="_blank" rel="noopener noreferrer">
             <span class="path__title">Localização<svg class="spark" aria-hidden="true"><use href="#spark"/></svg></span>
             <span class="path__note">Abra a rota no Google Maps e chegue sem pressa.<span class="sr-only"> (abre em nova aba)</span></span>
           </a>
@@ -124,17 +130,14 @@
       <ul class="footer__contacts">
         <li>
           <span class="footer__label">Instagram</span>
-          <!-- TROCAR: perfil real -->
           <a href="https://www.instagram.com/by.gabinails_" target="_blank" rel="noopener noreferrer">@by.gabinails_<span class="sr-only"> (abre em nova aba)</span></a>
         </li>
         <li>
           <span class="footer__label">WhatsApp</span>
-          <!-- TROCAR: número real -->
           <a href="https://wa.me/5513997400196" target="_blank" rel="noopener noreferrer">(13) 99740-0196<span class="sr-only"> (abre em nova aba)</span></a>
         </li>
         <li>
           <span class="footer__label">Endereço</span>
-          <!-- TROCAR: endereço real -->
           <address>Rua Oscar Simões de Carvalho, 10, loja 4<br>Cidade Anchieta, Itanhaém/SP · CEP 11740-000</address>
         </li>
       </ul>

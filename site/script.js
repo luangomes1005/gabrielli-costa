@@ -1,10 +1,11 @@
 /* ==========================================================================
-   Gabrielli Costa — comportamento
-   1. Preloader com vídeo de tinta (toca inteiro) e saída em tinta escorrendo
-   2. Scroll suave (Lenis + ScrollTrigger) e título letra por letra
+   Gabrielli Costa — comportamento (revisão mobile)
+   1. Preloader com vídeo de tinta e saída em tinta escorrendo
+   2. Scroll suave (Lenis no desktop) + título letra por letra
    3. Hero: vídeo controlado pelo scroll (seek por quadro)
    4. Divisórias dos acessos e tema do header
-   Fallbacks: sem GSAP, sem vídeo, vídeo com erro ou prefers-reduced-motion
+   Fallbacks: sem GSAP, sem vídeo, autoplay bloqueado, economia de dados,
+   prefers-reduced-motion.
    ========================================================================== */
 (() => {
   'use strict';
@@ -19,29 +20,32 @@
   const footer = $('.site-footer');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Dispositivos mais fracos (celular, poucos núcleos, pouca memória, economia de dados)
-     recebem uma versão mais leve dos efeitos; o visual continua o mesmo */
+  /* Detecção de aparelho */
   const COARSE = matchMedia('(pointer: coarse)').matches;
-  const LITE = COARSE
+  const SMALL = matchMedia('(max-width: 768px)').matches;
+  const SAVE_DATA = Boolean(navigator.connection && navigator.connection.saveData);
+  const LITE = COARSE || SMALL || SAVE_DATA
     || (navigator.hardwareConcurrency || 8) <= 4
-    || (navigator.deviceMemory || 8) <= 4
-    || Boolean(navigator.connection && navigator.connection.saveData);
+    || (navigator.deviceMemory || 8) <= 4;
+  const MOBILE = COARSE || SMALL;
 
-  const METADATA_TIMEOUT = 10000; // ms sem metadados do vídeo → modo estático
-  const SCROLL_LERP = 0.06;       // suavidade do scroll: menor = mais pesado e lento
-  const SCROLL_WHEEL = 0.55;      // velocidade da roda do mouse: menor = mais lento
-  const SMOOTHING = 0.16;         // quanto o tempo exibido persegue o alvo por frame (60 fps)
-  const FRAME = 1 / 30;           // o vídeo só recebe seek quando muda de quadro (30 fps)
-  const SCROLL_PER_SECOND = 0.5;  // alturas de tela de scroll por segundo de vídeo
-  const MIN_SCROLL_SCREENS = 3;
-  const MAX_SCROLL_SCREENS = 7;
+  const METADATA_TIMEOUT = MOBILE ? 15000 : 10000; // redes móveis são mais lentas
+  const SCROLL_LERP = 0.06;
+  const SCROLL_WHEEL = 0.55;
+  const SMOOTHING = MOBILE ? 0.24 : 0.16;          // no toque o vídeo acompanha o dedo mais de perto
+  const FRAME = MOBILE ? 1 / 24 : 1 / 30;          // menos seeks por segundo no celular
+  const SCROLL_PER_SECOND = MOBILE ? 0.38 : 0.5;   // trecho de scroll mais curto no celular
+  const MIN_SCROLL_SCREENS = MOBILE ? 2.5 : 3;
+  const MAX_SCROLL_SCREENS = MOBILE ? 5 : 7;
+  const SCRUB = MOBILE ? 0.3 : 0.6;
 
   /* Preloader */
-  const PRELOADER_RATE = 1.6;       // velocidade do vídeo: 1 = original (7,9 s); 1.6 ≈ 5 s
-  const PRELOADER_MAX_WAIT = 14000; // segurança: nunca ficar preso se o vídeo não terminar
-  const POUR_LEAD = 1.5;            // s (do vídeo) antes do fim em que a tinta já começa a descer
-  const POUR_DURATION = 1.5;        // s — descida da tinta que revela a hero
-  const POUR_TITLE_DELAY = 900;     // ms — o título entra enquanto a tinta desce
+  const PRELOADER_RATE = MOBILE ? 2 : 1.6;
+  const PRELOADER_MAX_WAIT = MOBILE ? 8000 : 14000;
+  const PRELOADER_START_WAIT = 2500; // sem começar a tocar em 2,5 s (autoplay bloqueado) → segue
+  const POUR_LEAD = 1.5;
+  const POUR_DURATION = MOBILE ? 1.2 : 1.5;
+  const POUR_TITLE_DELAY = 900;
 
   const yearEl = $('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -54,10 +58,11 @@
     if (reason) console.info('[hero] modo estático:', reason);
   }
 
-  /* ---------- Vídeo: versão leve no celular ---------- */
+  /* ---------- Vídeo: versão leve no celular + economia de dados ---------- */
   function pickVideoSource() {
+    if (SAVE_DATA) video.preload = 'metadata';
     const alt = video.dataset.srcMobile;
-    if (alt && matchMedia('(max-width: 768px)').matches) { video.src = alt; video.load(); }
+    if (alt && SMALL) { video.src = alt; video.load(); }
   }
 
   /* ---------- Vídeo: aguarda metadados ou falha ---------- */
@@ -95,7 +100,7 @@
     });
   }
 
-  /* ---------- Preloader: o vídeo toca quase inteiro; depois a tinta continua escorrendo ---------- */
+  /* ---------- Preloader ---------- */
   async function runPreloader(ready, skip) {
     const pre = $('.preloader');
     if (!pre) return;
@@ -104,19 +109,21 @@
     const vid = $('.preloader__video', pre);
     const logoWrap = $('.preloader__logo', pre);
 
-    /* Máscara da tinta preparada desde o início (totalmente opaca): na saída não há nada a criar,
-       então não há engasgo entre a entrada e a saída da logo */
     const H = pre.offsetHeight;
-    pre.style.setProperty('--my', (-1.4 * H) + 'px'); // tinta cobrindo a tela inteira
+    pre.style.setProperty('--my', (-1.4 * H) + 'px');
     pre.classList.add('is-pouring');
 
-    /* Libera a saída perto do fim do vídeo (ou quando ele termina, falha ou estoura o limite) */
+    /* Libera a saída perto do fim do vídeo, ou se ele terminar, falhar, não começar
+       (iOS em economia de bateria bloqueia autoplay) ou estourar o limite */
     const videoDone = vid ? new Promise((r) => {
+      let started = false;
+      vid.addEventListener('playing', () => { started = true; }, { once: true });
       vid.addEventListener('timeupdate', () => {
         if (vid.duration && vid.currentTime >= vid.duration - POUR_LEAD) r();
       });
       vid.addEventListener('ended', r, { once: true });
       vid.addEventListener('error', r, { once: true });
+      setTimeout(() => { if (!started) r(); }, PRELOADER_START_WAIT);
       setTimeout(r, PRELOADER_MAX_WAIT);
     }) : Promise.resolve();
 
@@ -126,21 +133,18 @@
       if (p && p.catch) p.catch(() => {});
     }
 
-    /* A logo é centralizada por transform no CSS; o GSAP anima só opacidade e escala sobre ele */
     gsap.set(logoWrap, { xPercent: -50, yPercent: -50, left: '50%', top: '50%', x: 0, y: 0 });
     gsap.fromTo(logoWrap, { opacity: 0, scale: 0.92 },
       { opacity: 1, scale: 1, duration: 1.5, delay: 0.25, ease: 'expo.out' });
 
     await Promise.all([ready, videoDone]);
 
-    /* Saída: a tinta continua escorrendo para baixo e revela a hero.
-       A máscara com a borda em dedos de tinta desce junto. */
-    gsap.killTweensOf(logoWrap); // evita dois tweens disputando a mesma logo
+    gsap.killTweensOf(logoWrap);
     const tl = gsap.timeline({ onComplete: () => pre.remove() });
     tl.to(logoWrap, { opacity: 0, scale: 1.04, duration: 0.5, ease: 'power2.in' }, 0)
       .to(pre, { '--my': (0.6 * H) + 'px', duration: POUR_DURATION, ease: 'power2.in' }, 0.3);
 
-    await new Promise((r) => setTimeout(r, POUR_TITLE_DELAY)); // o título entra enquanto a tinta desce
+    await new Promise((r) => setTimeout(r, POUR_TITLE_DELAY));
   }
 
   /* ---------- Scroll suave ---------- */
@@ -178,21 +182,17 @@
     });
   }
 
-  /* ---------- Hero: scrub real por currentTime ---------- */
+  /* ---------- Hero: scrub por currentTime ---------- */
   function initHeroScrub() {
     const duration = video.duration;
     const maxTime = Math.max(duration - 0.05, 0);
 
+    /* hero.offsetHeight (100svh) não oscila com a barra de endereço do celular */
+    const viewH = () => hero.offsetHeight || window.innerHeight;
     const scrollLength = () => Math.round(
-      window.innerHeight * gsap.utils.clamp(MIN_SCROLL_SCREENS, MAX_SCROLL_SCREENS, duration * SCROLL_PER_SECOND)
+      viewH() * gsap.utils.clamp(MIN_SCROLL_SCREENS, MAX_SCROLL_SCREENS, duration * SCROLL_PER_SECOND)
     );
     const end = () => '+=' + scrollLength();
-
-    console.info('[hero] vídeo carregado:', {
-      duração: duration.toFixed(2) + ' s',
-      resolução: video.videoWidth + '×' + video.videoHeight,
-      distânciaDeScroll: scrollLength() + ' px'
-    });
 
     video.pause();
     video.addEventListener('play', () => video.pause());
@@ -201,17 +201,22 @@
     if (video.readyState >= 2) hero.classList.add('has-video');
 
     /* iOS/Safari só libera seeks fluidos depois de uma interação com o vídeo */
-    window.addEventListener('touchstart', () => {
+    const unlock = () => {
       const p = video.play();
       if (p && typeof p.then === 'function') p.then(() => video.pause()).catch(() => {});
-    }, { once: true, passive: true });
+    };
+    window.addEventListener('touchstart', unlock, { once: true, passive: true });
+    window.addEventListener('pointerdown', unlock, { once: true, passive: true });
 
-    /* O alvo vem do scroll; o tempo exibido persegue o alvo e só dispara seek quando muda de quadro.
-       fastSeek só é preciso com o vídeo exportado com -g 1 (todos os quadros são keyframes). */
     let target = 0;
     let shown = 0;
+    let visible = true;
+
+    /* Fora da hero (ou aba oculta) não há por que fazer seek */
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
 
     gsap.ticker.add(() => {
+      if (!visible) return;
       const k = 1 - Math.pow(1 - SMOOTHING, gsap.ticker.deltaRatio());
       shown += (target - shown) * k;
       if (video.seeking) return;
@@ -232,7 +237,7 @@
         end,
         pin: true,
         anticipatePin: 1,
-        scrub: 0.6,
+        scrub: SCRUB,
         invalidateOnRefresh: true,
         onUpdate: (self) => { target = self.progress * maxTime; }
       }
@@ -248,7 +253,7 @@
       .to($('.hero__tint'), { opacity: 1, duration: 0.1, ease: 'power1.in' }, 0.9)
       .to($('.hero__cue'), { autoAlpha: 0, duration: 0.06 }, 0.94);
 
-    /* Zoom lento no vídeo: só em aparelhos potentes, é a camada mais pesada da hero */
+    /* Zoom lento: só em aparelhos potentes */
     if (!LITE) tl.fromTo(video, { scale: 1 }, { scale: 1.07, duration: 1 }, 0);
 
     video.addEventListener('error', () => {
@@ -257,7 +262,7 @@
     }, { once: true });
   }
 
-  /* ---------- Entrada do título: letra por letra ---------- */
+  /* ---------- Entrada do título ---------- */
   function playIntro() {
     const inners = $$('.hero__line-inner');
     const chars = inners.flatMap(splitChars);
@@ -270,9 +275,9 @@
     root.classList.remove('is-loading');
 
     gsap.timeline({ defaults: { ease: 'expo.out' } })
-      .to(chars, { yPercent: 0, rotate: 0, duration: LITE ? 1.3 : 1.6, stagger: LITE ? 0.035 : 0.05 }, 0)
-      .to(leadText, { opacity: 1, y: 0, duration: 1.2 }, 0.7)
-      .to(header, { autoAlpha: 1, duration: 1, ease: 'power1.out' }, 0.9);
+      .to(chars, { yPercent: 0, rotate: 0, duration: LITE ? 1.2 : 1.6, stagger: LITE ? 0.03 : 0.05 }, 0)
+      .to(leadText, { opacity: 1, y: 0, duration: 1.2 }, LITE ? 0.5 : 0.7)
+      .to(header, { autoAlpha: 1, duration: 1, ease: 'power1.out' }, LITE ? 0.6 : 0.9);
   }
 
   /* ---------- Acessos e header ---------- */
@@ -282,11 +287,10 @@
         '--draw': 1, duration: 1.4, ease: 'expo.out',
         scrollTrigger: { trigger: item, start: 'top 90%', once: true }
       });
-      /* Título e nota sobem suavemente; clearProps devolve o controle do hover ao CSS */
       gsap.from([$('.path__title', item), $('.path__note', item)], {
-        y: LITE ? 20 : 36, opacity: 0, duration: 1.3, ease: 'expo.out', stagger: 0.08,
+        y: LITE ? 20 : 36, opacity: 0, duration: LITE ? 1 : 1.3, ease: 'expo.out', stagger: 0.08,
         clearProps: 'transform,opacity',
-        scrollTrigger: { trigger: item, start: 'top 88%', once: true }
+        scrollTrigger: { trigger: item, start: 'top 92%', once: true }
       });
     });
   }
@@ -298,6 +302,19 @@
       end: 'bottom top',
       toggleClass: { targets: header, className: 'is-on-light' }
     });
+  }
+
+  /* Girar o celular muda a altura da hero: recalcula o pin e a distância do scroll */
+  function initOrientation() {
+    let t;
+    const refresh = () => {
+      clearTimeout(t);
+      t = setTimeout(() => ScrollTrigger.refresh(), 350);
+    };
+    window.addEventListener('orientationchange', refresh);
+    if (screen.orientation) screen.orientation.addEventListener('change', refresh);
+    /* Fontes e imagens que chegam tarde mudam a altura da página */
+    window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 200), { once: true });
   }
 
   /* ---------- Inicialização ---------- */
@@ -312,7 +329,7 @@
   }
   async function ensureGsap() {
     if (window.gsap && window.ScrollTrigger) return true;
-    console.warn('[gsap] assets/vendor não encontrado; tentando o CDN. Verifique se a pasta assets/ está ao lado do index.html.');
+    console.warn('[gsap] assets/vendor não encontrado; tentando o CDN.');
     try {
       if (!window.gsap) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js');
       if (!window.ScrollTrigger) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js');
@@ -324,12 +341,12 @@
     if (!(await ensureGsap())) { enterStaticMode('GSAP ou ScrollTrigger não carregaram'); return; }
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
+    if (MOBILE) ScrollTrigger.normalizeScroll(false);
 
     pickVideoSource();
     const metaP = waitForVideoMetadata();
     metaP.catch(() => {});
 
-    /* Pronto = fontes + metadados da hero + vídeo do preloader (com limite, para nunca ficar preso) */
     const pv = $('.preloader__video');
     const pvReady = pv ? new Promise((r) => {
       if (pv.readyState >= 3) return r();
@@ -339,9 +356,12 @@
 
     const ready = Promise.race([
       Promise.all([document.fonts ? document.fonts.ready : null, metaP.catch(() => {}), pvReady]),
-      new Promise((r) => setTimeout(r, 4500))
+      new Promise((r) => setTimeout(r, MOBILE ? 3500 : 4500))
     ]);
-    await runPreloader(ready, reduceMotion.matches);
+
+    /* Economia de dados: pula o vídeo do preloader (não baixa nem toca) */
+    if (SAVE_DATA && pv) { pv.removeAttribute('autoplay'); pv.preload = 'none'; }
+    await runPreloader(ready, reduceMotion.matches || SAVE_DATA);
     root.classList.remove('is-locked');
 
     if (reduceMotion.matches) {
@@ -360,6 +380,7 @@
     playIntro();
     initPaths();
     initHeaderTheme();
+    initOrientation();
 
     try { await metaP; initHeroScrub(); } catch (err) { enterStaticMode(err.message); }
     ScrollTrigger.refresh();
