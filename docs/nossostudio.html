@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Conheça nosso studio | Gabrieli Costa</title>
+  <meta name="description" content="Conheça o studio de Gabrieli Costa: alongamento, banho de gel, esmaltação em gel e nail art personalizada. Veja trabalhos reais e agende seu horário.">
+  <meta name="theme-color" content="#4B0F1E">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <!-- Estado inicial das animações: só com movimento permitido (evita piscar antes do JS) -->
+  <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
+  <noscript><style>.js [data-reveal], .js [data-in] { opacity: 1 !important; transform: none !important; } .js .st-title__in { visibility: visible !important; transform: none !important; }</style></noscript>
+
+  <link rel="preload" href="assets/fonts/cormorant-upright-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="studio.css">
+  <!-- GSAP, ScrollTrigger e Lenis são carregados pelo studio.js, só no computador.
+       No celular nenhum deles (nem o vídeo da hero) é baixado. -->
+  <script src="studio.js" defer></script>
+</head>
+
+<!--
+  TROCAR: fotos em assets/img/studio/, vídeo assets/img/studio/hero.mp4, referências e estacionamento
+  (Localização), depoimentos reais e respostas do FAQ.
+  Enquanto as imagens não existem, cada quadro mostra um degradê no lugar.
+  VÍDEO DA HERO (só computador): ele anda junto com o scroll. Para rolar sem travar, exporte com muitos keyframes:
+  ffmpeg -i hero.mp4 -c:v libx264 -g 1 -crf 23 -an -movflags +faststart hero-novo.mp4
+-->
+<body class="page-studio">
+  <a class="skip-link" href="#portfolio">Ir para o conteúdo</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="spark" viewBox="0 0 24 24"><path d="M12 0C12.8 7.2 16.8 11.2 24 12 16.8 12.8 12.8 16.8 12 24 11.2 16.8 7.2 12.8 0 12 7.2 11.2 11.2 7.2 12 0Z"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Gabrieli Costa, voltar à página inicial">
+      <img class="brand__mark" src="assets/img/logo-mark.png" alt="" width="40" height="41">
+      <span class="brand__name">Gabrieli Costa</span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <ul>
+        <li><a href="#portfolio">Portfólio</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer">Agendar<span class="sr-only"> (abre em nova aba)</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 01 HERO. Computador: vídeo controlado pelo scroll (src entra via studio.js, a partir de data-src).
+         Celular: sem vídeo, o <video> é removido e o fundo é um degradê em CSS. -->
+    <section class="st-hero" id="inicio" aria-label="Apresentação">
+      <video class="st-hero__video" data-src="assets/img/studio/hero.mp4" muted playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>
+      <div class="st-hero__shade"></div>
+      <div class="st-hero__body">
+        <p class="st-hero__eyebrow" data-in>Nail design e estética</p>
+        <h1 class="st-title">
+          <span class="st-title__line"><span class="st-title__in">Gabrieli</span></span>
+          <span class="st-title__line st-title__line--right"><span class="st-title__in">Costa</span></span>
+        </h1>
+        <div class="st-hero__foot" data-in>
+          <p class="st-hero__lead">Unhas desenhadas sob medida, com acabamento de joia.</p>
+          <a class="btn" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer">Agendar meu horário<span class="sr-only"> (abre em nova aba)</span></a>
+        </div>
+      </div>
+      <a class="st-cue" href="#portfolio" aria-label="Rolar para o portfólio"><span>Role</span><i></i></a>
+    </section>
+
+    <!-- 02 PORTFÓLIO (computador: carrossel conduzido pelo scroll; celular: fila com rolagem lateral) -->
+    <section class="st-sec st-sec--wine" id="portfolio" aria-labelledby="t-portfolio">
+      <p class="st-eyebrow" data-reveal>02 — Portfólio</p>
+      <h2 class="st-h2" id="t-portfolio" data-reveal>Cada detalhe, <em>de perto.</em></h2>
+      <div class="gallery">
+        <figure class="ph g1" data-reveal><img src="assets/img/studio/unha1.png" alt="Unhas alongadas em gel com acabamento rosé, foto macro" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.png" alt="Nail art com detalhes dourados" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento na TIPS</figcaption></figure>
+        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.png" alt="Esmaltação em gel em tom nude brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
+        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.png" alt="Banho de gel em unhas naturais" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
+        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.png" alt="Unhas francesinha em formato amendoado" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
+        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.png" alt="Unhas com acabamento fosco e cristais" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- 03 SERVIÇOS -->
+    <section class="st-sec st-sec--ink" id="servicos" aria-labelledby="t-servicos">
+      <p class="st-eyebrow" data-reveal>03 — Serviços</p>
+      <h2 class="st-h2" id="t-servicos" data-reveal>Escolha o seu <em>cuidado.</em></h2>
+      <ul class="card-grid">
+        <li class="card" data-reveal>
+          <div class="card__top"><span class="card__num">01</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
+          <h3 class="card__title">Alongamento</h3>
+          <p class="card__text">Extensão em gel ou fibra, modelada no formato que combina com suas mãos e com o seu dia a dia.</p>
+          <ul class="ticks"><li>Resistência e leveza</li><li>Formato sob medida</li><li>Acabamento natural</li></ul>
+          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20alongamento." target="_blank" rel="noopener noreferrer">Agendar alongamento<span class="sr-only"> (abre em nova aba)</span></a>
+        </li>
+        <li class="card" data-reveal>
+          <div class="card__top"><span class="card__num">02</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
+          <h3 class="card__title">Banho de gel</h3>
+          <p class="card__text">Camada de gel sobre a unha natural para proteger, fortalecer e ajudar no crescimento.</p>
+          <ul class="ticks"><li>Fortalece a unha natural</li><li>Brilho duradouro</li><li>Sem aumentar o comprimento</li></ul>
+          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20banho%20de%20gel." target="_blank" rel="noopener noreferrer">Agendar banho de gel<span class="sr-only"> (abre em nova aba)</span></a>
+        </li>
+        <li class="card" data-reveal>
+          <div class="card__top"><span class="card__num">03</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
+          <h3 class="card__title">Esmaltação em gel</h3>
+          <p class="card__text">Cor intensa e brilho de espelho, com secagem imediata e muito mais durabilidade.</p>
+          <ul class="ticks"><li>Dura semanas sem lascar</li><li>Grande variedade de cores</li><li>Seca na hora</li></ul>
+          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20esmalta%C3%A7%C3%A3o%20em%20gel." target="_blank" rel="noopener noreferrer">Agendar esmaltação<span class="sr-only"> (abre em nova aba)</span></a>
+        </li>
+        <li class="card" data-reveal>
+          <div class="card__top"><span class="card__num">04</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
+          <h3 class="card__title">Manicure tradicional</h3>
+          <p class="card__text">Cuidado completo com cutículas, hidratação e esmalte, para quem gosta do clássico bem-feito.</p>
+          <ul class="ticks"><li>Cutículas impecáveis</li><li>Hidratação das mãos</li><li>Momento de pausa</li></ul>
+          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20manicure." target="_blank" rel="noopener noreferrer">Agendar manicure<span class="sr-only"> (abre em nova aba)</span></a>
+        </li>
+        <li class="card" data-reveal>
+          <div class="card__top"><span class="card__num">05</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
+          <h3 class="card__title">Nail art personalizada</h3>
+          <p class="card__text">Desenhos, pedrarias e texturas criados a partir da sua referência, para uma peça só sua.</p>
+          <ul class="ticks"><li>Criação exclusiva</li><li>Detalhes feitos à mão</li><li>Combina com cada ocasião</li></ul>
+          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20nail%20art%20personalizada." target="_blank" rel="noopener noreferrer">Agendar nail art<span class="sr-only"> (abre em nova aba)</span></a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 04 EXPERIÊNCIA -->
+    <section class="st-sec st-sec--blush" id="experiencia" aria-labelledby="t-exp">
+      <p class="st-eyebrow" data-reveal>04 — Experiência</p>
+      <h2 class="st-h2" id="t-exp" data-reveal>Um horário para <em>você respirar.</em></h2>
+      <ul class="card-grid card-grid--exp">
+        <li class="card card--exp" data-reveal><div class="card__top"><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div><h3 class="card__title">Ambiente acolhedor</h3><p class="card__text">Um espaço calmo, perfumado e confortável, pensado para você relaxar enquanto cuida das mãos.</p></li>
+        <li class="card card--exp" data-reveal><div class="card__top"><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div><h3 class="card__title">Higiene e biossegurança</h3><p class="card__text">Materiais esterilizados, itens descartáveis quando indicado e bancada higienizada a cada atendimento.</p></li>
+        <li class="card card--exp" data-reveal><div class="card__top"><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div><h3 class="card__title">Produtos selecionados</h3><p class="card__text">Géis, esmaltes e preparadores de qualidade profissional, escolhidos pela durabilidade e pelo cuidado com a unha.</p></li>
+        <li class="card card--exp" data-reveal><div class="card__top"><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div><h3 class="card__title">Atendimento personalizado</h3><p class="card__text">Conversamos sobre formato, cor e rotina antes de começar. Nada de resultado genérico.</p></li>
+        <li class="card card--exp" data-reveal><div class="card__top"><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div><h3 class="card__title">Atenção aos detalhes</h3><p class="card__text">Cutículas, laterais, brilho e simetria: o acabamento é revisado até estar exatamente como deve.</p></li>
+      </ul>
+    </section>
+
+    <!-- 05 SOBRE -->
+    <section class="st-sec st-sec--ink about" id="sobre" aria-labelledby="t-sobre">
+      <figure class="ph about__img" data-reveal><img src="assets/img/studio/Gabrieli.png" alt="Retrato de Gabrieli Costa" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+      <div class="about__txt">
+        <p class="st-eyebrow" data-reveal>05 — Sobre Gabrieli</p>
+        <h2 class="st-h2" id="t-sobre" data-reveal>Mãos que cuidam <em>com intenção.</em></h2>
+        <p data-reveal>Olá, eu sou a Gabrieli. Transformei o meu olhar para o detalhe em profissão e hoje faço do nail design uma forma de cuidar de pessoas.</p>
+        <p data-reveal>Minha especialidade é criar unhas naturais e elegantes, com acabamento limpo e duração real. Acredito que cada cliente merece um resultado pensado para as suas mãos, e não um modelo pronto.</p>
+        <p class="about__q" data-reveal>“Beleza é cuidado repetido com carinho.”</p>
+      </div>
+    </section>
+
+    <!-- 06 TRANSFORMAÇÕES -->
+    <section class="st-sec st-sec--wine" id="transformacoes" aria-labelledby="t-trans">
+      <p class="st-eyebrow" data-reveal>06 — Transformações</p>
+      <h2 class="st-h2" id="t-trans" data-reveal>Antes e <em>depois.</em></h2>
+      <div class="cmp" data-reveal style="--pos:50%">
+        <div class="cmp__layer cmp__after ph"><img src="assets/img/studio/depois.png" alt="Unhas depois do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Depois</b></div>
+        <div class="cmp__layer cmp__before ph"><img src="assets/img/studio/antes.png" alt="Unhas antes do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Antes</b></div>
+        <span class="cmp__bar" aria-hidden="true"><svg><use href="#spark"/></svg></span>
+        <input class="cmp__range" type="range" min="0" max="100" value="50" aria-label="Comparar antes e depois">
+      </div>
+      <p class="cmp__note" data-reveal>Arraste para comparar o acabamento, as cutículas e a evolução do formato.</p>
+    </section>
+
+    <!-- 07 DEPOIMENTOS -->
+    <section class="st-sec st-sec--blush" id="depoimentos" aria-labelledby="t-dep">
+      <p class="st-eyebrow" data-reveal>07 — Depoimentos</p>
+      <h2 class="st-h2" id="t-dep" data-reveal>Quem já <em>viveu.</em></h2>
+      <!-- TROCAR: nota e número de avaliações reais -->
+      <p class="rating" data-reveal>
+        <strong>5,0</strong>
+        <span class="rating__meta"><span class="rating__stars" role="img" aria-label="5 de 5 estrelas">★★★★★</span><span>Avaliação no Google</span></span>
+      </p>
+      <!-- TROCAR: depoimentos reais (modelo abaixo) -->
+      <ul class="quotes">
+        <li class="card card--quote" data-reveal><span class="stars" role="img" aria-label="5 de 5 estrelas">★★★★★</span><blockquote>“Saí do studio me sentindo outra pessoa. O acabamento é impecável e durou muito mais do que eu esperava.”</blockquote><cite>Nome da cliente</cite></li>
+        <li class="card card--quote" data-reveal><span class="stars" role="img" aria-label="5 de 5 estrelas">★★★★★</span><blockquote>“Levei uma referência e ela entendeu exatamente o que eu queria. Atendimento muito cuidadoso.”</blockquote><cite>Nome da cliente</cite></li>
+        <li class="card card--quote" data-reveal><span class="stars" role="img" aria-label="5 de 5 estrelas">★★★★★</span><blockquote>“Ambiente lindo, tudo muito limpo e organizado. Já agendei a próxima manutenção.”</blockquote><cite>Nome da cliente</cite></li>
+      </ul>
+      <div class="client-photos">
+        <figure class="ph" data-reveal><img src="assets/img/studio/unha7.png" alt="Cliente mostrando as unhas feitas no studio" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+        <figure class="ph" data-reveal><img src="assets/img/studio/unha8.png" alt="Cliente satisfeita com o resultado" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+      </div>
+    </section>
+
+    <!-- 08 COMO AGENDAR -->
+    <section class="st-sec st-sec--ink" id="como-agendar" aria-labelledby="t-ag">
+      <p class="st-eyebrow" data-reveal>08 — Como agendar</p>
+      <h2 class="st-h2" id="t-ag" data-reveal>Simples, <em>em quatro passos.</em></h2>
+      <ol class="steps">
+        <li class="card card--step" data-reveal><span class="step__n">1</span><h3>Escolha o procedimento</h3><p>Veja os serviços e decida o que combina com você.</p></li>
+        <li class="card card--step" data-reveal><span class="step__n">2</span><h3>Chame no WhatsApp</h3><p>Conte o que deseja e envie uma referência, se tiver.</p></li>
+        <li class="card card--step" data-reveal><span class="step__n">3</span><h3>Veja os horários</h3><p>Respondemos com as datas disponíveis para você.</p></li>
+        <li class="card card--step" data-reveal><span class="step__n">4</span><h3>Confirme</h3><p>Combinado o dia, é só chegar e aproveitar.</p></li>
+      </ol>
+    </section>
+
+    <!-- 09 LOCALIZAÇÃO. O mapa só carrega pelo studio.js (computador: ao rolar; celular: ao tocar no botão). -->
+    <section class="st-sec st-sec--wine loc" id="localizacao" aria-labelledby="t-loc">
+      <div class="loc__txt">
+        <p class="st-eyebrow" data-reveal>09 — Localização</p>
+        <h2 class="st-h2" id="t-loc" data-reveal>Fácil de <em>chegar.</em></h2>
+        <!-- TROCAR: referências e estacionamento -->
+        <dl class="loc__list" data-reveal>
+          <div><dt>Endereço</dt><dd><address>Rua Oscar Simões de Carvalho, 10, loja 4<br>Cidade Anchieta, Itanhaém/SP · CEP 11740-000</address></dd></div>
+          <div><dt>Referências</dt><dd>Próximo a (ponto de referência).</dd></div>
+          <div><dt>Estacionamento</dt><dd>(Informar se há vaga na rua ou convênio.)</dd></div>
+        </dl>
+        <a class="lnk" data-reveal href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Oscar+Sim%C3%B5es+de+Carvalho,+10,+Itanha%C3%A9m,+SP" target="_blank" rel="noopener noreferrer">Abrir rota no Google Maps<span class="sr-only"> (abre em nova aba)</span></a>
+      </div>
+      <div class="loc__map" data-reveal><iframe title="Mapa com a localização do studio" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-src="https://www.google.com/maps?q=Rua+Oscar+Sim%C3%B5es+de+Carvalho,+10,+Itanha%C3%A9m,+SP&amp;output=embed"></iframe></div>
+    </section>
+
+    <!-- 10 FAQ -->
+    <section class="st-sec st-sec--blush" id="duvidas" aria-labelledby="t-faq">
+      <p class="st-eyebrow" data-reveal>10 — Dúvidas</p>
+      <h2 class="st-h2" id="t-faq" data-reveal>Perguntas <em>frequentes.</em></h2>
+      <!-- TROCAR: ajuste as respostas à realidade do studio -->
+      <div class="faq">
+        <details data-reveal><summary>Quanto tempo dura o procedimento?</summary><p>Esmaltação em gel leva cerca de 1h30. Banho de gel e alongamento levam de 2h30 a 3h30, dependendo da nail art.</p></details>
+        <details data-reveal><summary>Quanto tempo dura o resultado?</summary><p>Em média, de 3 a 4 semanas, variando com a rotina e com o crescimento da unha.</p></details>
+        <details data-reveal><summary>Como funciona a manutenção?</summary><p>Recomendamos a manutenção a cada 21 a 30 dias, para preservar o formato, o brilho e a saúde da unha.</p></details>
+        <details data-reveal><summary>Posso escolher qualquer decoração?</summary><p>Sim. Traga uma referência e adaptamos ao formato das suas unhas. Artes muito elaboradas podem ter valor e tempo adicionais.</p></details>
+        <details data-reveal><summary>Como funciona o cancelamento?</summary><p>Pedimos aviso com pelo menos 24 horas de antecedência para reagendar sem custo.</p></details>
+        <details data-reveal><summary>Quais são as formas de pagamento?</summary><p>Pix, cartão de débito e crédito (consulte o parcelamento) e dinheiro.</p></details>
+      </div>
+    </section>
+
+    <!-- 11 CTA FINAL -->
+    <section class="st-cta ph" aria-labelledby="t-cta">
+      <img src="assets/img/studio/cta.webp" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+      <div class="st-cta__in">
+        <h2 id="t-cta" data-reveal>Suas mãos dizem muito. <em>Que digam o melhor de você.</em></h2>
+        <a class="btn btn--solid" data-reveal href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer">Agendar pelo WhatsApp<span class="sr-only"> (abre em nova aba)</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contato">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="assets/img/logo-gabrieli-costa.png" alt="Gabrieli Costa, Nail Designer" width="1000" height="773" loading="lazy" decoding="async">
+      </div>
+      <ul class="footer__contacts">
+        <li><span class="footer__label">Instagram</span><a href="https://www.instagram.com/by.gabinails_" target="_blank" rel="noopener noreferrer">@by.gabinails_<span class="sr-only"> (abre em nova aba)</span></a></li>
+        <li><span class="footer__label">WhatsApp</span><a href="https://wa.me/5513997400196" target="_blank" rel="noopener noreferrer">(13) 99740-0196<span class="sr-only"> (abre em nova aba)</span></a></li>
+        <li><span class="footer__label">Endereço</span><address>Rua Oscar Simões de Carvalho, 10, loja 4<br>Cidade Anchieta, Itanhaém/SP · CEP 11740-000</address></li>
+      </ul>
+    </div>
+    <div class="footer__legal">
+      <div class="footer__rule" aria-hidden="true"><i></i><svg><use href="#spark"/></svg><i></i></div>
+      <p>© <span data-year>2026</span> Gabrieli Costa. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>
