@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Gabrielli Costa | Clínica de estética</title>
-  <meta name="description" content="Gabrielli Costa: estética e nail design com atenção a cada detalhe. Conheça a clínica, veja como chegar e agende seu horário.">
+  <title>Gabrieli Costa | Clínica de estética</title>
+  <meta name="description" content="Gabrieli Costa: estética e nail design com atenção a cada detalhe. Conheça a clínica, veja como chegar e agende seu horário.">
   <meta name="theme-color" content="#4B0F1E">
   <meta name="color-scheme" content="dark">
   <meta name="format-detection" content="telephone=no, address=no">
@@ -18,21 +18,20 @@
   <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="studio.css">
 
-  <script src="assets/vendor/gsap.min.js" defer></script>
-  <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="assets/vendor/lenis.min.js" defer></script>
+  <!-- GSAP, ScrollTrigger e Lenis são carregados pelo script.js, só no computador.
+       No celular nenhum deles é baixado. -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
   <a class="skip-link" href="#acessos">Ir para o conteúdo</a>
 
-  <!-- Preloader: vídeo de tinta (sem loop) + transição em tinta (ver script.js) -->
+  <!-- Preloader. O vídeo só é carregado no computador (data-src, ver script.js).
+       No celular aparece apenas a marca com fade. -->
   <div class="preloader" aria-hidden="true">
-    <video class="preloader__video" src="assets/preloader.mp4"
-           autoplay muted playsinline webkit-playsinline preload="auto"
+    <video class="preloader__video" data-src="assets/preloader.mp4"
+           muted playsinline webkit-playsinline preload="none"
            disablepictureinpicture disableremoteplayback></video>
     <div class="preloader__vignette"></div>
     <img class="preloader__logo" src="assets/img/logo-mark.png" alt="" width="40" height="41">
@@ -46,28 +45,25 @@
   </svg>
 
   <header class="site-header">
-    <a class="brand" href="#inicio" aria-label="Gabrielli Costa, voltar ao início">
+    <a class="brand" href="#inicio" aria-label="Gabrieli Costa, voltar ao início">
       <img class="brand__mark" src="assets/img/logo-mark.png" alt="" width="40" height="41">
-      <span class="brand__name">Gabrielli Costa</span>
+      <span class="brand__name">Gabrieli Costa</span>
     </a>
     <nav class="nav" aria-label="Principal">
       <ul>
         <li><a href="#acessos">Acessos</a></li>
         <li><a href="#contato">Contato</a></li>
-        <!-- TROCAR: número real do WhatsApp (formato 55 + DDD + número) -->
         <li><a href="https://wa.me/551397400196?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer">Agendar<span class="sr-only"> (abre em nova aba)</span></a></li>
       </ul>
     </nav>
   </header>
 
   <main>
-    <!-- HERO: vídeo controlado pelo scroll -->
-    <!-- Para o vídeo leve no celular, crie assets/hero-720.mp4 e acrescente data-src-mobile="assets/hero-720.mp4" na tag <video> -->
+    <!-- HERO. Computador: vídeo controlado pelo scroll (src entra via script.js, a partir de data-src).
+         Celular: sem vídeo, o <video> é removido e o fundo é um degradê em CSS. -->
     <section class="hero" id="inicio" aria-label="Apresentação">
-      <video class="hero__video" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true"
-             disablepictureinpicture disableremoteplayback>
-        <source src="assets/hero.mp4" type="video/mp4">
-      </video>
+      <video class="hero__video" data-src="assets/hero.mp4" muted playsinline webkit-playsinline preload="none" tabindex="-1" aria-hidden="true"
+             disablepictureinpicture disableremoteplayback></video>
       <div class="hero__tint"></div>
       <div class="hero__vignette"></div>
 
@@ -75,7 +71,7 @@
         <p class="hero__lead"><span>Estética e nail design, com atenção a cada detalhe.</span></p>
 
         <h1 class="hero__title">
-          <span class="hero__line"><span class="hero__line-inner">Gabrielli</span></span>
+          <span class="hero__line"><span class="hero__line-inner">Gabrieli</span></span>
           <span class="hero__line hero__line--right"><span class="hero__line-inner">Costa</span></span>
         </h1>
 
@@ -103,7 +99,6 @@
         </li>
 
         <li class="path path--2">
-          <!-- TROCAR: consulta do Google Maps (query = endereço completo, com espaços como +) -->
           <a href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Oscar+Sim%C3%B5es+de+Carvalho+10+Itanha%C3%A9m+SP" target="_blank" rel="noopener noreferrer">
             <span class="path__title">Localização<svg class="spark" aria-hidden="true"><use href="#spark"/></svg></span>
             <span class="path__note">Abra a rota no Google Maps e chegue sem pressa.<span class="sr-only"> (abre em nova aba)</span></span>
@@ -111,7 +106,6 @@
         </li>
 
         <li class="path path--3">
-          <!-- TROCAR: número real do WhatsApp -->
           <a href="https://wa.me/551397400196?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer">
             <span class="path__title">Agende seu horário<svg class="spark" aria-hidden="true"><use href="#spark"/></svg></span>
             <span class="path__note">Converse com a gente pelo WhatsApp e escolha o melhor dia.<span class="sr-only"> (abre em nova aba)</span></span>
@@ -124,7 +118,7 @@
   <footer class="site-footer" id="contato">
     <div class="footer__grid">
       <div class="footer__brand">
-        <img src="assets/img/logo-gabrielli-costa.webp" alt="Gabrielli Costa, Nail Designer" width="1000" height="773" loading="lazy" decoding="async">
+        <img src="assets/img/logo-Gabrieli-costa.png" alt="Gabrieli Costa, Nail Designer" width="1000" height="773" loading="lazy" decoding="async">
       </div>
 
       <ul class="footer__contacts">
@@ -147,7 +141,7 @@
       <div class="footer__rule" aria-hidden="true">
         <i></i><svg><use href="#spark"/></svg><i></i>
       </div>
-      <p>© <span data-year>2026</span> Gabrielli Costa. Todos os direitos reservados.</p>
+      <p>© <span data-year>2026</span> Gabrieli Costa. Todos os direitos reservados.</p>
     </div>
   </footer>
 </body>

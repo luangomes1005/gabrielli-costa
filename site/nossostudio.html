@@ -3,33 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Conheça nosso studio | Gabrielli Costa</title>
-  <meta name="description" content="Conheça o studio de Gabrielli Costa: alongamento, banho de gel, esmaltação em gel e nail art personalizada. Veja trabalhos reais e agende seu horário.">
+  <title>Conheça nosso studio | Gabrieli Costa</title>
+  <meta name="description" content="Conheça o studio de Gabrieli Costa: alongamento, banho de gel, esmaltação em gel e nail art personalizada. Veja trabalhos reais e agende seu horário.">
   <meta name="theme-color" content="#4B0F1E">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
   <!-- Estado inicial das animações: só com movimento permitido (evita piscar antes do JS) -->
   <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
+  <noscript><style>.js [data-reveal], .js [data-in] { opacity: 1 !important; transform: none !important; } .js .st-title__in { visibility: visible !important; transform: none !important; }</style></noscript>
 
   <link rel="preload" href="assets/fonts/cormorant-upright-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="studio.css">
-  <script src="assets/vendor/gsap.min.js" defer></script>
-  <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="assets/vendor/lenis.min.js" defer></script>
+  <!-- GSAP, ScrollTrigger e Lenis são carregados pelo studio.js, só no computador.
+       No celular nenhum deles (nem o vídeo da hero) é baixado. -->
   <script src="studio.js" defer></script>
 </head>
 
 <!--
-  TROCAR: fotos em assets/img/studio/, vídeo assets/studio-hero.mp4, referências e estacionamento
+  TROCAR: fotos em assets/img/studio/, vídeo assets/img/studio/hero.mp4, referências e estacionamento
   (Localização), depoimentos reais e respostas do FAQ.
   Enquanto as imagens não existem, cada quadro mostra um degradê no lugar.
-  VÍDEO DA HERO: ele anda junto com o scroll. Para rolar sem travar, exporte com muitos keyframes:
+  VÍDEO DA HERO (só computador): ele anda junto com o scroll. Para rolar sem travar, exporte com muitos keyframes:
   ffmpeg -i hero.mp4 -c:v libx264 -g 1 -crf 23 -an -movflags +faststart hero-novo.mp4
 -->
-<body>
+<body class="page-studio">
   <a class="skip-link" href="#portfolio">Ir para o conteúdo</a>
 
   <svg class="sprite" aria-hidden="true" focusable="false">
@@ -37,9 +37,9 @@
   </svg>
 
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Gabrielli Costa, voltar à página inicial">
+    <a class="brand" href="index.html" aria-label="Gabrieli Costa, voltar à página inicial">
       <img class="brand__mark" src="assets/img/logo-mark.png" alt="" width="40" height="41">
-      <span class="brand__name">Gabrielli Costa</span>
+      <span class="brand__name">Gabrieli Costa</span>
     </a>
     <nav class="nav" aria-label="Principal">
       <ul>
@@ -51,14 +51,15 @@
   </header>
 
   <main>
-    <!-- 01 HERO (vídeo controlado pelo scroll via studio.js; sem JS ele toca normalmente) -->
+    <!-- 01 HERO. Computador: vídeo controlado pelo scroll (src entra via studio.js, a partir de data-src).
+         Celular: sem vídeo, o <video> é removido e o fundo é um degradê em CSS. -->
     <section class="st-hero" id="inicio" aria-label="Apresentação">
-      <video class="st-hero__video" src="assets/img/studio/hero.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>
+      <video class="st-hero__video" data-src="assets/img/studio/hero.mp4" muted playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>
       <div class="st-hero__shade"></div>
       <div class="st-hero__body">
         <p class="st-hero__eyebrow" data-in>Nail design e estética</p>
         <h1 class="st-title">
-          <span class="st-title__line"><span class="st-title__in">Gabrielli</span></span>
+          <span class="st-title__line"><span class="st-title__in">Gabrieli</span></span>
           <span class="st-title__line st-title__line--right"><span class="st-title__in">Costa</span></span>
         </h1>
         <div class="st-hero__foot" data-in>
@@ -69,17 +70,17 @@
       <a class="st-cue" href="#portfolio" aria-label="Rolar para o portfólio"><span>Role</span><i></i></a>
     </section>
 
-    <!-- 02 PORTFÓLIO (carrossel horizontal conduzido pelo scroll) -->
+    <!-- 02 PORTFÓLIO (computador: carrossel conduzido pelo scroll; celular: fila com rolagem lateral) -->
     <section class="st-sec st-sec--wine" id="portfolio" aria-labelledby="t-portfolio">
       <p class="st-eyebrow" data-reveal>02 — Portfólio</p>
       <h2 class="st-h2" id="t-portfolio" data-reveal>Cada detalhe, <em>de perto.</em></h2>
       <div class="gallery">
-        <figure class="ph g1" data-reveal><img src="assets/img/studio/unha1.png" alt="Unhas alongadas em gel com acabamento rosé, foto macro" loading="lazy" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
-        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.png" alt="Nail art com detalhes dourados" loading="lazy" onerror="this.remove()"><figcaption>Alongamento na TIPS</figcaption></figure>
-        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.png" alt="Esmaltação em gel em tom nude brilhante" loading="lazy" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
-        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.png" alt="Banho de gel em unhas naturais" loading="lazy" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
-        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.png" alt="Unhas francesinha em formato amendoado" loading="lazy" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
-        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.png" alt="Unhas com acabamento fosco e cristais" loading="lazy" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+        <figure class="ph g1" data-reveal><img src="assets/img/studio/unha1.png" alt="Unhas alongadas em gel com acabamento rosé, foto macro" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.png" alt="Nail art com detalhes dourados" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento na TIPS</figcaption></figure>
+        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.png" alt="Esmaltação em gel em tom nude brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
+        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.png" alt="Banho de gel em unhas naturais" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
+        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.png" alt="Unhas francesinha em formato amendoado" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
+        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.png" alt="Unhas com acabamento fosco e cristais" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
       </div>
     </section>
 
@@ -141,11 +142,11 @@
 
     <!-- 05 SOBRE -->
     <section class="st-sec st-sec--ink about" id="sobre" aria-labelledby="t-sobre">
-      <figure class="ph about__img" data-reveal><img src="assets/img/studio/gabrielli.png" alt="Retrato de Gabrielli Costa" loading="lazy" onerror="this.remove()"></figure>
+      <figure class="ph about__img" data-reveal><img src="assets/img/studio/Gabrieli.png" alt="Retrato de Gabrieli Costa" loading="lazy" decoding="async" onerror="this.remove()"></figure>
       <div class="about__txt">
-        <p class="st-eyebrow" data-reveal>05 — Sobre Gabrielli</p>
+        <p class="st-eyebrow" data-reveal>05 — Sobre Gabrieli</p>
         <h2 class="st-h2" id="t-sobre" data-reveal>Mãos que cuidam <em>com intenção.</em></h2>
-        <p data-reveal>Olá, eu sou a Gabrielli. Transformei o meu olhar para o detalhe em profissão e hoje faço do nail design uma forma de cuidar de pessoas.</p>
+        <p data-reveal>Olá, eu sou a Gabrieli. Transformei o meu olhar para o detalhe em profissão e hoje faço do nail design uma forma de cuidar de pessoas.</p>
         <p data-reveal>Minha especialidade é criar unhas naturais e elegantes, com acabamento limpo e duração real. Acredito que cada cliente merece um resultado pensado para as suas mãos, e não um modelo pronto.</p>
         <p class="about__q" data-reveal>“Beleza é cuidado repetido com carinho.”</p>
       </div>
@@ -156,8 +157,8 @@
       <p class="st-eyebrow" data-reveal>06 — Transformações</p>
       <h2 class="st-h2" id="t-trans" data-reveal>Antes e <em>depois.</em></h2>
       <div class="cmp" data-reveal style="--pos:50%">
-        <div class="cmp__layer cmp__after ph"><img src="assets/img/studio/depois.png" alt="Unhas depois do procedimento" loading="lazy" onerror="this.remove()"><b>Depois</b></div>
-        <div class="cmp__layer cmp__before ph"><img src="assets/img/studio/antes.png" alt="Unhas antes do procedimento" loading="lazy" onerror="this.remove()"><b>Antes</b></div>
+        <div class="cmp__layer cmp__after ph"><img src="assets/img/studio/depois.png" alt="Unhas depois do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Depois</b></div>
+        <div class="cmp__layer cmp__before ph"><img src="assets/img/studio/antes.png" alt="Unhas antes do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Antes</b></div>
         <span class="cmp__bar" aria-hidden="true"><svg><use href="#spark"/></svg></span>
         <input class="cmp__range" type="range" min="0" max="100" value="50" aria-label="Comparar antes e depois">
       </div>
@@ -180,8 +181,8 @@
         <li class="card card--quote" data-reveal><span class="stars" role="img" aria-label="5 de 5 estrelas">★★★★★</span><blockquote>“Ambiente lindo, tudo muito limpo e organizado. Já agendei a próxima manutenção.”</blockquote><cite>Nome da cliente</cite></li>
       </ul>
       <div class="client-photos">
-        <figure class="ph" data-reveal><img src="assets/img/studio/unha7.png" alt="Cliente mostrando as unhas feitas no studio" loading="lazy" onerror="this.remove()"></figure>
-        <figure class="ph" data-reveal><img src="assets/img/studio/unha8.png" alt="Cliente satisfeita com o resultado" loading="lazy" onerror="this.remove()"></figure>
+        <figure class="ph" data-reveal><img src="assets/img/studio/unha7.png" alt="Cliente mostrando as unhas feitas no studio" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+        <figure class="ph" data-reveal><img src="assets/img/studio/unha8.png" alt="Cliente satisfeita com o resultado" loading="lazy" decoding="async" onerror="this.remove()"></figure>
       </div>
     </section>
 
@@ -197,7 +198,7 @@
       </ol>
     </section>
 
-    <!-- 09 LOCALIZAÇÃO -->
+    <!-- 09 LOCALIZAÇÃO. O mapa só carrega pelo studio.js (computador: ao rolar; celular: ao tocar no botão). -->
     <section class="st-sec st-sec--wine loc" id="localizacao" aria-labelledby="t-loc">
       <div class="loc__txt">
         <p class="st-eyebrow" data-reveal>09 — Localização</p>
@@ -210,7 +211,7 @@
         </dl>
         <a class="lnk" data-reveal href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Oscar+Sim%C3%B5es+de+Carvalho,+10,+Itanha%C3%A9m,+SP" target="_blank" rel="noopener noreferrer">Abrir rota no Google Maps<span class="sr-only"> (abre em nova aba)</span></a>
       </div>
-      <div class="loc__map" data-reveal><iframe title="Mapa com a localização do studio" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Rua+Oscar+Sim%C3%B5es+de+Carvalho,+10,+Itanha%C3%A9m,+SP&amp;output=embed"></iframe></div>
+      <div class="loc__map" data-reveal><iframe title="Mapa com a localização do studio" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-src="https://www.google.com/maps?q=Rua+Oscar+Sim%C3%B5es+de+Carvalho,+10,+Itanha%C3%A9m,+SP&amp;output=embed"></iframe></div>
     </section>
 
     <!-- 10 FAQ -->
@@ -230,7 +231,7 @@
 
     <!-- 11 CTA FINAL -->
     <section class="st-cta ph" aria-labelledby="t-cta">
-      <img src="assets/img/studio/cta.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img src="assets/img/studio/cta.webp" alt="" loading="lazy" decoding="async" onerror="this.remove()">
       <div class="st-cta__in">
         <h2 id="t-cta" data-reveal>Suas mãos dizem muito. <em>Que digam o melhor de você.</em></h2>
         <a class="btn btn--solid" data-reveal href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer">Agendar pelo WhatsApp<span class="sr-only"> (abre em nova aba)</span></a>
@@ -241,7 +242,7 @@
   <footer class="site-footer" id="contato">
     <div class="footer__grid">
       <div class="footer__brand">
-        <img src="assets/img/logo-gabrielli-costa.webp" alt="Gabrielli Costa, Nail Designer" width="1000" height="773" loading="lazy" decoding="async">
+        <img src="assets/img/logo-Gabrieli-costa.png" alt="Gabrieli Costa, Nail Designer" width="1000" height="773" loading="lazy" decoding="async">
       </div>
       <ul class="footer__contacts">
         <li><span class="footer__label">Instagram</span><a href="https://www.instagram.com/by.gabinails_" target="_blank" rel="noopener noreferrer">@by.gabinails_<span class="sr-only"> (abre em nova aba)</span></a></li>
@@ -251,7 +252,7 @@
     </div>
     <div class="footer__legal">
       <div class="footer__rule" aria-hidden="true"><i></i><svg><use href="#spark"/></svg><i></i></div>
-      <p>© <span data-year>2026</span> Gabrielli Costa. Todos os direitos reservados.</p>
+      <p>© <span data-year>2026</span> Gabrieli Costa. Todos os direitos reservados.</p>
     </div>
   </footer>
 </body>

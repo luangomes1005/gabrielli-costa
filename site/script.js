@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Gabrielli Costa — comportamento (revisão mobile)
-   1. Preloader com vídeo de tinta e saída em tinta escorrendo
-   2. Scroll suave (Lenis no desktop) + título letra por letra
-   3. Hero: vídeo controlado pelo scroll (seek por quadro)
-   4. Divisórias dos acessos e tema do header
-   Fallbacks: sem GSAP, sem vídeo, autoplay bloqueado, economia de dados,
-   prefers-reduced-motion.
+   Gabrielli Costa — comportamento
+   CELULAR (tela até 768px ou toque): caminho leve, sem vídeo, sem GSAP,
+     sem Lenis, sem ScrollTrigger. Só JS puro + transições em CSS.
+   COMPUTADOR: preloader com vídeo de tinta, scroll suave (Lenis), título
+     letra por letra e hero com vídeo controlado pelo scroll (GSAP).
+     As bibliotecas são carregadas aqui, só nesse caso.
+   Fallbacks: sem GSAP, sem vídeo, economia de dados, prefers-reduced-motion.
    ========================================================================== */
 (() => {
   'use strict';
@@ -13,6 +13,7 @@
   const root = document.documentElement;
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
   const hero = $('.hero');
   const video = $('.hero__video');
@@ -20,35 +21,131 @@
   const footer = $('.site-footer');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Detecção de aparelho */
+  /* Detecção de aparelho (mesma regra do CSS: max-width 768px ou toque) */
   const COARSE = matchMedia('(pointer: coarse)').matches;
   const SMALL = matchMedia('(max-width: 768px)').matches;
   const SAVE_DATA = Boolean(navigator.connection && navigator.connection.saveData);
-  const LITE = COARSE || SMALL || SAVE_DATA
+  const MOBILE = COARSE || SMALL;
+  const LITE = MOBILE || SAVE_DATA
     || (navigator.hardwareConcurrency || 8) <= 4
     || (navigator.deviceMemory || 8) <= 4;
-  const MOBILE = COARSE || SMALL;
 
-  const METADATA_TIMEOUT = MOBILE ? 15000 : 10000; // redes móveis são mais lentas
+  /* Computador */
+  const METADATA_TIMEOUT = 10000;
   const SCROLL_LERP = 0.06;
   const SCROLL_WHEEL = 0.55;
-  const SMOOTHING = MOBILE ? 0.24 : 0.16;          // no toque o vídeo acompanha o dedo mais de perto
-  const FRAME = MOBILE ? 1 / 24 : 1 / 30;          // menos seeks por segundo no celular
-  const SCROLL_PER_SECOND = MOBILE ? 0.38 : 0.5;   // trecho de scroll mais curto no celular
-  const MIN_SCROLL_SCREENS = MOBILE ? 2.5 : 3;
-  const MAX_SCROLL_SCREENS = MOBILE ? 5 : 7;
-  const SCRUB = MOBILE ? 0.3 : 0.6;
+  const SMOOTHING = 0.16;
+  const FRAME = 1 / 30;
+  const SCROLL_PER_SECOND = 0.5;
+  const MIN_SCROLL_SCREENS = 3;
+  const MAX_SCROLL_SCREENS = 7;
+  const SCRUB = 0.6;
 
-  /* Preloader */
-  const PRELOADER_RATE = MOBILE ? 2 : 1.6;
-  const PRELOADER_MAX_WAIT = MOBILE ? 8000 : 14000;
+  /* Preloader (computador) */
+  const PRELOADER_RATE = 1.6;
+  const PRELOADER_MAX_WAIT = 14000;
   const PRELOADER_START_WAIT = 2500; // sem começar a tocar em 2,5 s (autoplay bloqueado) → segue
   const POUR_LEAD = 1.5;
-  const POUR_DURATION = MOBILE ? 1.2 : 1.5;
+  const POUR_DURATION = 1.5;
   const POUR_TITLE_DELAY = 900;
 
   const yearEl = $('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  function splitChars(el) {
+    const text = el.textContent;
+    el.setAttribute('aria-label', text);
+    el.textContent = '';
+    return [...text].map((c) => {
+      const s = document.createElement('span');
+      s.className = 'ch';
+      s.setAttribute('aria-hidden', 'true');
+      s.textContent = c;
+      el.appendChild(s);
+      return s;
+    });
+  }
+
+  /* Âncoras com rolagem suave nativa (celular e fallback) */
+  function initNativeAnchors() {
+    $$('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      const el = id.length > 1 ? $(id) : null;
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      }
+    }));
+  }
+
+  /* ======================================================================
+     CELULAR — caminho leve
+     ====================================================================== */
+  async function initMobile() {
+    hero.classList.add('is-static', 'is-lite');
+    if (video) video.remove();            // sem vídeo: nada é baixado
+    const pv = $('.preloader__video');
+    if (pv) pv.remove();
+
+    const pre = $('.preloader');
+    if (pre && !reduceMotion.matches) {
+      const fontsReady = Promise.race([
+        document.fonts ? document.fonts.ready : Promise.resolve(),
+        wait(1500)
+      ]);
+      pre.classList.add('is-lite');
+      requestAnimationFrame(() => pre.classList.add('is-show'));
+      await Promise.all([fontsReady, wait(700)]);
+      pre.classList.add('is-out');
+      await wait(450);
+    }
+    if (pre) pre.remove();
+    root.classList.remove('is-locked');
+
+    initNativeAnchors();
+    initHeaderScroll();
+    playIntroLite();
+    initPathsLite();
+  }
+
+  /* Fundo sólido no header depois de rolar (1 listener passivo, 1 frame por vez) */
+  function initHeaderScroll() {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      header.classList.toggle('is-scrolled', window.scrollY > 40);
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+
+  /* Entrada do título: as letras sobem via transição em CSS (html.is-ready) */
+  function playIntroLite() {
+    const inners = $$('.hero__line-inner');
+    const chars = inners.flatMap(splitChars);
+    chars.forEach((c, i) => { c.style.transitionDelay = (i * 0.03) + 's'; });
+    root.classList.remove('is-loading');
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('is-ready')));
+  }
+
+  /* Acessos: aparecem ao entrar na tela (IntersectionObserver, sem scroll listener) */
+  function initPathsLite() {
+    if (!('IntersectionObserver' in window)) return;
+    const items = $$('.path');
+    items.forEach((i) => i.classList.add('reveal'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    items.forEach((i) => io.observe(i));
+  }
+
+  /* ======================================================================
+     COMPUTADOR
+     ====================================================================== */
 
   /* ---------- Modo estático (fallback) ---------- */
   function enterStaticMode(reason) {
@@ -58,17 +155,56 @@
     if (reason) console.info('[hero] modo estático:', reason);
   }
 
-  /* ---------- Vídeo: versão leve no celular + economia de dados ---------- */
-  function pickVideoSource() {
-    if (SAVE_DATA) video.preload = 'metadata';
-    const alt = video.dataset.srcMobile;
-    if (alt && SMALL) { video.src = alt; video.load(); }
+  /* ---------- Carregamento das bibliotecas (só no computador) ---------- */
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const el = document.createElement('script');
+      el.src = src;
+      el.onload = resolve;
+      el.onerror = () => { el.remove(); reject(new Error('falha ao carregar ' + src)); };
+      document.head.appendChild(el);
+    });
+  }
+  async function loadFirst(urls) {
+    for (const u of urls) {
+      try { await loadScript(u); return true; } catch (err) { console.warn('[lib]', err.message); }
+    }
+    return false;
+  }
+  async function ensureLibs() {
+    const lenisP = window.Lenis ? Promise.resolve() : loadFirst(['assets/vendor/lenis.min.js']);
+    const gsapP = (async () => {
+      if (!window.gsap) {
+        await loadFirst([
+          'assets/vendor/gsap.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js'
+        ]);
+      }
+      if (window.gsap && !window.ScrollTrigger) {
+        await loadFirst([
+          'assets/vendor/ScrollTrigger.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js'
+        ]);
+      }
+    })();
+    await Promise.all([lenisP, gsapP]);
+    return Boolean(window.gsap && window.ScrollTrigger);
+  }
+
+  /* ---------- Vídeos: o src só entra aqui (celular nunca chega nesta função) ---------- */
+  function startVideoLoads() {
+    const pv = $('.preloader__video');
+    if (pv && !SAVE_DATA && pv.dataset.src) { pv.src = pv.dataset.src; pv.preload = 'auto'; pv.load(); }
+    if (video && video.dataset.src) {
+      video.src = video.dataset.src;
+      video.preload = SAVE_DATA ? 'metadata' : 'auto';
+      video.load();
+    }
   }
 
   /* ---------- Vídeo: aguarda metadados ou falha ---------- */
   function waitForVideoMetadata() {
     return new Promise((resolve, reject) => {
-      const source = $('source', video);
       let settled = false;
       let timer;
 
@@ -76,7 +212,6 @@
         clearTimeout(timer);
         video.removeEventListener('loadedmetadata', check);
         video.removeEventListener('error', fail);
-        if (source) source.removeEventListener('error', fail);
       };
       const finish = (fn, value) => {
         if (settled) return;
@@ -93,14 +228,13 @@
 
       video.addEventListener('loadedmetadata', check);
       video.addEventListener('error', fail);
-      if (source) source.addEventListener('error', fail);
-      if (video.error || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) { fail(); return; }
+      if (video.error) { fail(); return; }
       timer = setTimeout(() => finish(reject, new Error('tempo esgotado ao carregar os metadados do vídeo')), METADATA_TIMEOUT);
       check();
     });
   }
 
-  /* ---------- Preloader ---------- */
+  /* ---------- Preloader (computador) ---------- */
   async function runPreloader(ready, skip) {
     const pre = $('.preloader');
     if (!pre) return;
@@ -114,7 +248,7 @@
     pre.classList.add('is-pouring');
 
     /* Libera a saída perto do fim do vídeo, ou se ele terminar, falhar, não começar
-       (iOS em economia de bateria bloqueia autoplay) ou estourar o limite */
+       ou estourar o limite */
     const videoDone = vid ? new Promise((r) => {
       let started = false;
       vid.addEventListener('playing', () => { started = true; }, { once: true });
@@ -144,20 +278,12 @@
     tl.to(logoWrap, { opacity: 0, scale: 1.04, duration: 0.5, ease: 'power2.in' }, 0)
       .to(pre, { '--my': (0.6 * H) + 'px', duration: POUR_DURATION, ease: 'power2.in' }, 0.3);
 
-    await new Promise((r) => setTimeout(r, POUR_TITLE_DELAY));
+    await wait(POUR_TITLE_DELAY);
   }
 
   /* ---------- Scroll suave ---------- */
   function initSmoothScroll() {
-    if (!window.Lenis || COARSE) {
-      /* Toque: o scroll nativo já é fluido; só suavizamos as âncoras */
-      $$('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
-        const id = a.getAttribute('href');
-        const el = id.length > 1 ? $(id) : null;
-        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
-      }));
-      return;
-    }
+    if (!window.Lenis) { initNativeAnchors(); return; }
     const lenis = new Lenis({ lerp: SCROLL_LERP, wheelMultiplier: SCROLL_WHEEL });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((t) => lenis.raf(t * 1000));
@@ -168,26 +294,11 @@
     }));
   }
 
-  function splitChars(el) {
-    const text = el.textContent;
-    el.setAttribute('aria-label', text);
-    el.textContent = '';
-    return [...text].map((c) => {
-      const s = document.createElement('span');
-      s.className = 'ch';
-      s.setAttribute('aria-hidden', 'true');
-      s.textContent = c;
-      el.appendChild(s);
-      return s;
-    });
-  }
-
   /* ---------- Hero: scrub por currentTime ---------- */
   function initHeroScrub() {
     const duration = video.duration;
     const maxTime = Math.max(duration - 0.05, 0);
 
-    /* hero.offsetHeight (100svh) não oscila com a barra de endereço do celular */
     const viewH = () => hero.offsetHeight || window.innerHeight;
     const scrollLength = () => Math.round(
       viewH() * gsap.utils.clamp(MIN_SCROLL_SCREENS, MAX_SCROLL_SCREENS, duration * SCROLL_PER_SECOND)
@@ -200,7 +311,7 @@
     video.addEventListener('seeked', () => hero.classList.add('has-video'), { once: true });
     if (video.readyState >= 2) hero.classList.add('has-video');
 
-    /* iOS/Safari só libera seeks fluidos depois de uma interação com o vídeo */
+    /* Safari só libera seeks fluidos depois de uma interação com o vídeo */
     const unlock = () => {
       const p = video.play();
       if (p && typeof p.then === 'function') p.then(() => video.pause()).catch(() => {});
@@ -212,7 +323,6 @@
     let shown = 0;
     let visible = true;
 
-    /* Fora da hero (ou aba oculta) não há por que fazer seek */
     document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
 
     gsap.ticker.add(() => {
@@ -262,7 +372,7 @@
     }, { once: true });
   }
 
-  /* ---------- Entrada do título ---------- */
+  /* ---------- Entrada do título (GSAP) ---------- */
   function playIntro() {
     const inners = $$('.hero__line-inner');
     const chars = inners.flatMap(splitChars);
@@ -280,7 +390,7 @@
       .to(header, { autoAlpha: 1, duration: 1, ease: 'power1.out' }, LITE ? 0.6 : 0.9);
   }
 
-  /* ---------- Acessos e header ---------- */
+  /* ---------- Acessos e header (GSAP) ---------- */
   function initPaths() {
     $$('.path').forEach((item) => {
       gsap.fromTo(item, { '--draw': 0 }, {
@@ -304,7 +414,6 @@
     });
   }
 
-  /* Girar o celular muda a altura da hero: recalcula o pin e a distância do scroll */
   function initOrientation() {
     let t;
     const refresh = () => {
@@ -313,42 +422,22 @@
     };
     window.addEventListener('orientationchange', refresh);
     if (screen.orientation) screen.orientation.addEventListener('change', refresh);
-    /* Fontes e imagens que chegam tarde mudam a altura da página */
     window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 200), { once: true });
   }
 
-  /* ---------- Inicialização ---------- */
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const el = document.createElement('script');
-      el.src = src;
-      el.onload = resolve;
-      el.onerror = () => reject(new Error('falha ao carregar ' + src));
-      document.head.appendChild(el);
-    });
-  }
-  async function ensureGsap() {
-    if (window.gsap && window.ScrollTrigger) return true;
-    console.warn('[gsap] assets/vendor não encontrado; tentando o CDN.');
-    try {
-      if (!window.gsap) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js');
-      if (!window.ScrollTrigger) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js');
-    } catch (err) { console.warn('[gsap]', err.message); }
-    return Boolean(window.gsap && window.ScrollTrigger);
-  }
+  async function initDesktop() {
+    const libsP = ensureLibs();   // baixa GSAP/Lenis e os vídeos em paralelo
+    startVideoLoads();
 
-  async function init() {
-    if (!(await ensureGsap())) { enterStaticMode('GSAP ou ScrollTrigger não carregaram'); return; }
+    if (!(await libsP)) { enterStaticMode('GSAP ou ScrollTrigger não carregaram'); return; }
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
-    if (MOBILE) ScrollTrigger.normalizeScroll(false);
 
-    pickVideoSource();
     const metaP = waitForVideoMetadata();
     metaP.catch(() => {});
 
     const pv = $('.preloader__video');
-    const pvReady = pv ? new Promise((r) => {
+    const pvReady = pv && pv.src ? new Promise((r) => {
       if (pv.readyState >= 3) return r();
       pv.addEventListener('canplay', r, { once: true });
       pv.addEventListener('error', r, { once: true });
@@ -356,11 +445,9 @@
 
     const ready = Promise.race([
       Promise.all([document.fonts ? document.fonts.ready : null, metaP.catch(() => {}), pvReady]),
-      new Promise((r) => setTimeout(r, MOBILE ? 3500 : 4500))
+      wait(4500)
     ]);
 
-    /* Economia de dados: pula o vídeo do preloader (não baixa nem toca) */
-    if (SAVE_DATA && pv) { pv.removeAttribute('autoplay'); pv.preload = 'none'; }
     await runPreloader(ready, reduceMotion.matches || SAVE_DATA);
     root.classList.remove('is-locked');
 
@@ -384,6 +471,11 @@
 
     try { await metaP; initHeroScrub(); } catch (err) { enterStaticMode(err.message); }
     ScrollTrigger.refresh();
+  }
+
+  /* ---------- Inicialização ---------- */
+  function init() {
+    if (MOBILE) initMobile(); else initDesktop();
   }
 
   if (document.readyState === 'loading') {
