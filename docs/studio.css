@@ -325,19 +325,23 @@ cite { font-style: normal; }
 
 /* ==========================================================================
    MOBILE LEVE (tela até 768px ou toque)
-   Sem vídeo na hero, sem pin/scrub, sem parallax, sem GSAP/Lenis.
+   Sem vídeo na hero (FOTO no lugar), sem pin/scrub, sem parallax, sem GSAP/Lenis.
    Animações só com CSS (transform/opacity). O studio.js aplica is-ready / is-in.
    ========================================================================== */
 @media (max-width: 768px), (pointer: coarse) {
 
-  /* Hero: degradê no lugar do vídeo */
+  /* Hero: FOTO no lugar do vídeo (assets/img/studio/hero-mobile.jpg).
+     Ajuste o enquadramento em "background-position" (ex.: center 30%). */
   .st-hero {
     min-height: 30rem;
-    background:
-      radial-gradient(120% 70% at 82% 10%, rgba(178, 60, 89, 0.5) 0%, rgba(109, 29, 50, 0.5) 40%, rgba(75, 15, 30, 0) 75%),
-      var(--ink);
+    background-color: var(--ink);
+    background-image: url("assets/img/studio/hero-mobile.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  .st-hero__video, .st-hero__shade, .st-cue { display: none; }
+  /* O .st-hero__shade continua ativo: escurece a foto para o texto ficar legível */
+  .st-hero__video, .st-cue { display: none; }
   .st-hero__body {
     padding: calc(var(--header-top) + 1rem) var(--pad-r) calc(1.75rem + var(--safe-b)) var(--pad-l);
   }

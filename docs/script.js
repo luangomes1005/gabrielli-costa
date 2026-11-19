@@ -1,7 +1,8 @@
 /* ==========================================================================
    Gabrielli Costa — comportamento
    CELULAR (tela até 768px ou toque): caminho leve, sem vídeo, sem GSAP,
-     sem Lenis, sem ScrollTrigger. Só JS puro + transições em CSS.
+     sem Lenis, sem ScrollTrigger. Hero com FOTO (assets/img/hero-mobile.jpg,
+     aplicada via CSS). Só JS puro + transições em CSS.
    COMPUTADOR: preloader com vídeo de tinta, scroll suave (Lenis), título
      letra por letra e hero com vídeo controlado pelo scroll (GSAP).
      As bibliotecas são carregadas aqui, só nesse caso.
@@ -83,7 +84,7 @@
      ====================================================================== */
   async function initMobile() {
     hero.classList.add('is-static', 'is-lite');
-    if (video) video.remove();            // sem vídeo: nada é baixado
+    if (video) video.remove();            // sem vídeo: nada é baixado; a foto vem do CSS
     const pv = $('.preloader__video');
     if (pv) pv.remove();
 

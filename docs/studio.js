@@ -1,5 +1,6 @@
 /* Conheça nosso studio — comportamento
-   CELULAR (tela até 768px ou toque): caminho leve. Sem vídeo, sem GSAP, sem Lenis, sem ScrollTrigger.
+   CELULAR (tela até 768px ou toque): caminho leve. Sem vídeo (a hero usa a foto
+     assets/img/studio/hero-mobile.jpg via CSS), sem GSAP, sem Lenis, sem ScrollTrigger.
      Só JS puro (IntersectionObserver) + transições em CSS. O mapa só carrega ao tocar no botão.
    COMPUTADOR: vídeo da hero no scroll, carrossel do portfólio no scroll, revelações, parallax.
      GSAP, ScrollTrigger e Lenis são carregados aqui, só nesse caso. */
@@ -89,7 +90,7 @@
      ====================================================================== */
   function initMobile() {
     const video = $('.st-hero__video');
-    if (video) video.remove();            // sem vídeo: nada é baixado
+    if (video) video.remove();            // sem vídeo: nada é baixado; a foto vem do CSS
     setupMapLite();
     initAnchors(null);
 

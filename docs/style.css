@@ -557,7 +557,7 @@ a { color: inherit; touch-action: manipulation; }
 
 /* ==========================================================================
    MOBILE LEVE (tela até 768px ou toque)
-   Sem vídeo, sem GSAP, sem granulação. Animações só com CSS (transform/opacity).
+   Sem vídeo, sem GSAP, sem granulação. Hero com FOTO. Animações só com CSS.
    O script.js aplica as classes is-lite / is-show / is-out / is-ready / is-in.
    ========================================================================== */
 @media (max-width: 768px), (pointer: coarse) {
@@ -570,14 +570,19 @@ a { color: inherit; touch-action: manipulation; }
   .preloader.is-show .preloader__logo { opacity: 1; }
   .preloader.is-out { opacity: 0; transition: opacity 0.45s ease; }
 
-  /* Hero: fundo estático em degradê no lugar do vídeo */
+  /* Hero: FOTO no lugar do vídeo (assets/img/hero-mobile.jpg).
+     Ajuste o enquadramento em "background-position" (ex.: center 30%). */
   .hero {
     min-height: 30rem;
-    background:
-      radial-gradient(120% 70% at 82% 10%, rgba(178, 60, 89, 0.5) 0%, rgba(109, 29, 50, 0.5) 40%, rgba(75, 15, 30, 0) 75%),
-      var(--ink);
+    background-color: var(--ink);
+    background-image: url("assets/img/hero-mobile.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  .hero__video, .hero__tint, .hero__vignette, .hero__cue, .hero__closing { display: none; }
+  /* Vídeo e elementos de scroll não existem no celular; tint e vignette
+     ficam ativos para dar leitura ao texto sobre a foto */
+  .hero__video, .hero__cue, .hero__closing { display: none; }
 
   /* Header: fundo sólido depois que a página rola, para não misturar com os títulos */
   .site-header {

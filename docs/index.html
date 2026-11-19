@@ -17,6 +17,8 @@
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Foto do hero no celular: só é pré-carregada em telas pequenas ou de toque -->
+  <link rel="preload" href="assets/img/hero-mobile.jpg" as="image" media="(max-width: 768px), (pointer: coarse)">
   <link rel="stylesheet" href="style.css">
 
   <!-- GSAP, ScrollTrigger e Lenis são carregados pelo script.js, só no computador.
@@ -60,7 +62,7 @@
 
   <main>
     <!-- HERO. Computador: vídeo controlado pelo scroll (src entra via script.js, a partir de data-src).
-         Celular: sem vídeo, o <video> é removido e o fundo é um degradê em CSS. -->
+         Celular: o <video> é removido e o fundo é a foto assets/img/hero-mobile.jpg (CSS). -->
     <section class="hero" id="inicio" aria-label="Apresentação">
       <video class="hero__video" data-src="assets/hero.mp4" muted playsinline webkit-playsinline preload="none" tabindex="-1" aria-hidden="true"
              disablepictureinpicture disableremoteplayback></video>
