@@ -2,6 +2,11 @@
    Conheça nosso studio — estilos (usa os tokens e o rodapé de style.css)
    ========================================================================== */
 
+/* ---------- Tokens locais ---------- */
+:root {
+  --card-gap: clamp(1rem, 2vw, 1.75rem);   /* espaço entre cards, fotos e passos */
+}
+
 /* ---------- Reset do que o style.css não cobre ---------- */
 h3, blockquote, figure, ol, dl, dd { margin: 0; }
 ol { padding: 0; list-style: none; }
@@ -18,7 +23,7 @@ cite { font-style: normal; }
 .site-header.is-hidden { transform: translateY(-110%); }
 .site-header:focus-within { transform: none; }
 
-/* Sobre seções claras (.st-sec--blush) o menu escurece. O rodapé agora é bordô e mantém o menu claro. */
+/* Sobre seções claras (.st-sec--blush) o menu escurece. O rodapé é bordô e mantém o menu claro. */
 .page-studio .site-header.is-on-light { color: var(--ink); }
 .page-studio .site-header.is-on-light .brand__mark { filter: brightness(0.28) saturate(2.2) hue-rotate(-12deg); }
 
@@ -125,7 +130,7 @@ cite { font-style: normal; }
   background: rgba(247, 214, 220, 0.04);
   transition: transform 0.6s var(--ease), border-color 0.6s var(--ease), background-color 0.6s var(--ease);
 }
-.card__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
+.card__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
 .card__num { font-size: var(--fs-label); font-weight: var(--w-label); letter-spacing: var(--ls-label); opacity: 0.7; }
 .card__spark { width: 1rem; height: 1rem; fill: var(--petal); transition: transform 0.8s var(--ease); }
 .card__title {
@@ -134,7 +139,15 @@ cite { font-style: normal; }
   text-wrap: balance;
 }
 .card__text { font-family: var(--font-display); font-weight: var(--w-display); font-size: var(--fs-note); line-height: 1.28; }
-.card .ticks { margin: 0.5rem 0 0.75rem; padding-top: 1.1rem; border-top: 1px solid rgba(247, 214, 220, 0.2); }
+
+/* rótulo + lista de itens (modalidades / benefícios): o filete fica no rótulo */
+.card__label {
+  margin-top: 0.5rem; padding-top: 1.1rem;
+  border-top: 1px solid rgba(247, 214, 220, 0.2);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--ls-label); text-transform: uppercase; opacity: 0.7;
+}
+.card .ticks { margin: -0.35rem 0 0.75rem; }
 .card .lnk { margin-top: auto; align-self: flex-start; }
 
 .ticks { display: grid; gap: 0.5rem; font-size: var(--fs-small); letter-spacing: 0.02em; }
@@ -148,20 +161,21 @@ cite { font-style: normal; }
 
 /* cards sobre fundo claro */
 .st-sec--blush .card { border-color: rgba(75, 15, 30, 0.2); background: rgba(255, 255, 255, 0.4); }
-.st-sec--blush .card .ticks { border-top-color: rgba(75, 15, 30, 0.2); }
+.st-sec--blush .card__label { border-top-color: rgba(75, 15, 30, 0.2); }
 .st-sec--blush .card__spark { fill: var(--garnet); }
 @media (hover: hover) {
   .st-sec--blush .card:hover { border-color: rgba(75, 15, 30, 0.5); background: rgba(255, 255, 255, 0.7); }
 }
 
-/* grade 3 + 2: a segunda linha divide a largura em duas partes iguais, sem buracos */
-.card-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--gap); }
+/* Grades. Base: 6 colunas; cada card ocupa 2 (3 por linha). */
+.card-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--card-gap); }
 .card-grid > li { grid-column: span 2; }
-.card-grid > li:nth-child(n + 4) { grid-column: span 3; }
+/* experiência (5 cards): a segunda linha divide a largura em duas partes iguais, sem buracos */
+.card-grid--exp > li:nth-child(n + 4) { grid-column: span 3; }
 
 /* experiência: cards mais leves, com filete de cor no topo */
 .card--exp { border-top: 2px solid var(--garnet); gap: 0.9rem; }
-.card--exp .card__top { margin-bottom: 0.6rem; }
+.card--exp .card__top { margin-bottom: 0.4rem; }
 .card--exp .card__spark { width: 1.35rem; height: 1.35rem; }
 .card--exp .card__title { font-style: italic; font-size: clamp(1.7rem, 2.3vw, 2.3rem); }
 .card--exp .card__text { font-family: var(--font-text); font-size: var(--fs-body); line-height: var(--lh-text); max-width: 34ch; }
@@ -169,7 +183,7 @@ cite { font-style: normal; }
 /* ---------- 02 Portfólio: carrossel conduzido pelo scroll ---------- */
 /* Base (sem JS / movimento reduzido / celular): fila com rolagem lateral nativa e encaixe */
 .gallery {
-  display: flex; gap: var(--gap);
+  display: flex; gap: var(--card-gap);
   overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1rem;
 }
 .gallery .ph {
@@ -239,7 +253,7 @@ cite { font-style: normal; }
 .rating strong { font-family: var(--font-display); font-weight: var(--w-display); font-size: clamp(3.5rem, 7vw, 6rem); line-height: 1; }
 .rating__meta { display: grid; gap: 0.2rem; font-size: var(--fs-small); letter-spacing: var(--ls-small); }
 .rating__stars, .stars { color: var(--garnet); letter-spacing: 0.18em; }
-.quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); margin-bottom: clamp(3rem, 6vw, 5rem); }
+.quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--card-gap); margin-bottom: clamp(3rem, 6vw, 5rem); }
 .card--quote { gap: 1.25rem; }
 .card--quote .stars { font-size: 0.95rem; }
 .card--quote blockquote { flex: 1; font-family: var(--font-display); font-size: var(--fs-note); line-height: 1.3; }
@@ -247,11 +261,11 @@ cite { font-style: normal; }
   padding-top: 1.1rem; border-top: 1px solid rgba(75, 15, 30, 0.2);
   font-size: var(--fs-label); font-weight: var(--w-label); letter-spacing: var(--ls-label); text-transform: uppercase;
 }
-.client-photos { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap); max-width: 44rem; }
+.client-photos { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--card-gap); max-width: 44rem; }
 .client-photos .ph { aspect-ratio: 1; }
 
 /* ---------- 08 Como agendar ---------- */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--card-gap); }
 .card--step { gap: 0.75rem; }
 .step__n { margin-bottom: 0.5rem; font-family: var(--font-display); font-style: italic; font-size: clamp(3.2rem, 5vw, 4.8rem); line-height: 1; color: var(--petal); }
 .card--step h3 { font-size: var(--fs-nav); font-weight: var(--w-label); letter-spacing: var(--ls-nav); text-transform: uppercase; }
@@ -295,7 +309,7 @@ cite { font-style: normal; }
 /* ---------- Responsivo ---------- */
 @media (max-width: 1099px) {
   .card-grid { grid-template-columns: repeat(2, 1fr); }
-  .card-grid > li, .card-grid > li:nth-child(n + 4) { grid-column: auto; }
+  .card-grid > li, .card-grid--exp > li:nth-child(n + 4) { grid-column: auto; }
   .card-grid > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .quotes { grid-template-columns: 1fr; }
@@ -330,7 +344,7 @@ cite { font-style: normal; }
    ========================================================================== */
 @media (max-width: 768px), (pointer: coarse) {
 
-  /* Hero: FOTO no lugar do vídeo (assets/img/studio/hero-mobile.jpg).
+  /* Hero: FOTO no lugar do vídeo (assets/img/studio/hero-mobile.png).
      Ajuste o enquadramento em "background-position" (ex.: center 30%). */
   .st-hero {
     min-height: 30rem;
@@ -345,7 +359,7 @@ cite { font-style: normal; }
   .st-hero__body {
     padding: calc(var(--header-top) + 1rem) var(--pad-r) calc(1.75rem + var(--safe-b)) var(--pad-l);
   }
-  .st-title { font-size: clamp(3.8rem, min(24vw, 27svh), 9rem); }
+  .st-title { font-size: clamp(3.8rem, min(23vw, 27svh), 9rem); }
   .st-hero__foot { flex-direction: column; align-items: flex-start; gap: 1.25rem; margin-top: 1.5rem; }
 
   /* Entrada da hero só com CSS */
@@ -368,6 +382,7 @@ cite { font-style: normal; }
   .st-h2 { font-size: clamp(2.4rem, 11vw, 3.4rem); margin-bottom: 2rem; }
   .st-eyebrow { margin-bottom: 1rem; }
   .card { padding: 1.5rem; }
+  .card-grid, .steps, .quotes, .client-photos { gap: 1rem; }
   .about { row-gap: 2rem; }
   .loc { row-gap: 2rem; }
   .quotes { margin-bottom: 2.5rem; }
@@ -375,6 +390,7 @@ cite { font-style: normal; }
 
   /* Portfólio: fila com rolagem lateral nativa, de ponta a ponta da tela */
   .gallery {
+    gap: 1rem;
     margin-inline: calc(var(--pad-l) * -1) calc(var(--pad-r) * -1);
     padding-inline: var(--pad-l) var(--pad-r);
     scroll-padding-inline: var(--pad-l);

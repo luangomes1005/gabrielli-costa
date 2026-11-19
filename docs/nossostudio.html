@@ -4,9 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Conheça nosso studio | Gabrieli Costa</title>
-  <meta name="description" content="Conheça o studio de Gabrieli Costa: alongamento, banho de gel, esmaltação em gel e nail art personalizada. Veja trabalhos reais e agende seu horário.">
+  <meta name="description" content="Conheça o studio de Gabrieli Costa: alongamento (molde F1 e na tips), banho de gel e esmaltação em gel. Veja trabalhos reais e agende seu horário.">
   <meta name="theme-color" content="#4B0F1E">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <!--
+    TROCAR: fotos em assets/img/studio/, vídeo assets/img/studio/hero.mp4, foto da hero no celular
+    assets/img/studio/hero-mobile.png, referências e estacionamento (Localização), depoimentos reais e respostas do FAQ.
+    Enquanto as imagens não existem, cada quadro mostra um degradê no lugar.
+    VÍDEO DA HERO (só computador): ele anda junto com o scroll. Para rolar sem travar, exporte com muitos keyframes:
+    ffmpeg -i hero.mp4 -c:v libx264 -g 1 -crf 23 -an -movflags +faststart hero-novo.mp4
+    FOTO DA HERO (só celular): pode ser um frame do vídeo:
+    ffmpeg -ss 2 -i hero.mp4 -frames:v 1 -vf "scale=900:-2" hero-mobile.png
+  -->
 
   <!-- Estado inicial das animações: só com movimento permitido (evita piscar antes do JS) -->
   <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
@@ -16,7 +26,7 @@
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <!-- Foto da hero no celular: só é pré-carregada em telas pequenas ou de toque -->
-  <link rel="preload" href="assets/img/studio/hero-mobile.jpg" as="image" media="(max-width: 768px), (pointer: coarse)">
+  <link rel="preload" href="assets/img/studio/hero-mobile.png" as="image" media="(max-width: 768px), (pointer: coarse)">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="studio.css">
   <!-- GSAP, ScrollTrigger e Lenis são carregados pelo studio.js, só no computador.
@@ -24,15 +34,6 @@
   <script src="studio.js" defer></script>
 </head>
 
-<!--
-  TROCAR: fotos em assets/img/studio/, vídeo assets/img/studio/hero.mp4, foto da hero no celular
-  assets/img/studio/hero-mobile.jpg, referências e estacionamento (Localização), depoimentos reais e respostas do FAQ.
-  Enquanto as imagens não existem, cada quadro mostra um degradê no lugar.
-  VÍDEO DA HERO (só computador): ele anda junto com o scroll. Para rolar sem travar, exporte com muitos keyframes:
-  ffmpeg -i hero.mp4 -c:v libx264 -g 1 -crf 23 -an -movflags +faststart hero-novo.mp4
-  FOTO DA HERO (só celular): pode ser um frame do vídeo:
-  ffmpeg -ss 2 -i hero.mp4 -frames:v 1 -vf "scale=900:-2" -q:v 4 hero-mobile.jpg
--->
 <body class="page-studio">
   <a class="skip-link" href="#portfolio">Ir para o conteúdo</a>
 
@@ -56,7 +57,7 @@
 
   <main>
     <!-- 01 HERO. Computador: vídeo controlado pelo scroll (src entra via studio.js, a partir de data-src).
-         Celular: o <video> é removido e o fundo é a foto assets/img/studio/hero-mobile.jpg (CSS). -->
+         Celular: o <video> é removido e o fundo é a foto assets/img/studio/hero-mobile.png (CSS). -->
     <section class="st-hero" id="inicio" aria-label="Apresentação">
       <video class="st-hero__video" data-src="assets/img/studio/hero.mp4" muted playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>
       <div class="st-hero__shade"></div>
@@ -80,11 +81,11 @@
       <h2 class="st-h2" id="t-portfolio" data-reveal>Cada detalhe, <em>de perto.</em></h2>
       <div class="gallery">
         <figure class="ph g1" data-reveal><img src="assets/img/studio/unha1.png" alt="Unhas alongadas em gel com acabamento rosé, foto macro" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
-        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.png" alt="Nail art com detalhes dourados" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento na TIPS</figcaption></figure>
-        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.png" alt="Esmaltação em gel em tom nude brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
-        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.png" alt="Banho de gel em unhas naturais" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
-        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.png" alt="Unhas francesinha em formato amendoado" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento Molde F1</figcaption></figure>
-        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.png" alt="Unhas com acabamento fosco e cristais" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.png" alt="Unhas com alongamento na tips e detalhes dourados" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento na tips</figcaption></figure>
+        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.png" alt="Unhas com alongamento molde F1 em tom nude brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
+        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.png" alt="Unhas com alongamento molde F1" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
+        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.png" alt="Unhas francesinha em formato amendoado" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
+        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.png" alt="Unhas com banho de gel e acabamento brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
       </div>
     </section>
 
@@ -92,18 +93,20 @@
     <section class="st-sec st-sec--ink" id="servicos" aria-labelledby="t-servicos">
       <p class="st-eyebrow" data-reveal>03 — Serviços</p>
       <h2 class="st-h2" id="t-servicos" data-reveal>Escolha o seu <em>cuidado.</em></h2>
-      <ul class="card-grid">
+      <ul class="card-grid card-grid--services">
         <li class="card" data-reveal>
           <div class="card__top"><span class="card__num">01</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
           <h3 class="card__title">Alongamento</h3>
-          <p class="card__text">Extensão em gel ou fibra, modelada no formato que combina com suas mãos e com o seu dia a dia.</p>
-          <ul class="ticks"><li>Resistência e leveza</li><li>Formato sob medida</li><li>Acabamento natural</li></ul>
+          <p class="card__text">Unhas mais longas e resistentes, modeladas no formato que combina com as suas mãos e com o seu dia a dia.</p>
+          <p class="card__label">Modalidades</p>
+          <ul class="ticks"><li>Extensão molde F1</li><li>Extensão na tips</li></ul>
           <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20alongamento." target="_blank" rel="noopener noreferrer">Agendar alongamento<span class="sr-only"> (abre em nova aba)</span></a>
         </li>
         <li class="card" data-reveal>
           <div class="card__top"><span class="card__num">02</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
           <h3 class="card__title">Banho de gel</h3>
           <p class="card__text">Camada de gel sobre a unha natural para proteger, fortalecer e ajudar no crescimento.</p>
+          <p class="card__label">Benefícios</p>
           <ul class="ticks"><li>Fortalece a unha natural</li><li>Brilho duradouro</li><li>Sem aumentar o comprimento</li></ul>
           <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20banho%20de%20gel." target="_blank" rel="noopener noreferrer">Agendar banho de gel<span class="sr-only"> (abre em nova aba)</span></a>
         </li>
@@ -111,22 +114,9 @@
           <div class="card__top"><span class="card__num">03</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
           <h3 class="card__title">Esmaltação em gel</h3>
           <p class="card__text">Cor intensa e brilho de espelho, com secagem imediata e muito mais durabilidade.</p>
+          <p class="card__label">Benefícios</p>
           <ul class="ticks"><li>Dura semanas sem lascar</li><li>Grande variedade de cores</li><li>Seca na hora</li></ul>
           <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20esmalta%C3%A7%C3%A3o%20em%20gel." target="_blank" rel="noopener noreferrer">Agendar esmaltação<span class="sr-only"> (abre em nova aba)</span></a>
-        </li>
-        <li class="card" data-reveal>
-          <div class="card__top"><span class="card__num">04</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
-          <h3 class="card__title">Manicure tradicional</h3>
-          <p class="card__text">Cuidado completo com cutículas, hidratação e esmalte, para quem gosta do clássico bem-feito.</p>
-          <ul class="ticks"><li>Cutículas impecáveis</li><li>Hidratação das mãos</li><li>Momento de pausa</li></ul>
-          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20manicure." target="_blank" rel="noopener noreferrer">Agendar manicure<span class="sr-only"> (abre em nova aba)</span></a>
-        </li>
-        <li class="card" data-reveal>
-          <div class="card__top"><span class="card__num">05</span><svg class="card__spark" aria-hidden="true"><use href="#spark"/></svg></div>
-          <h3 class="card__title">Nail art personalizada</h3>
-          <p class="card__text">Desenhos, pedrarias e texturas criados a partir da sua referência, para uma peça só sua.</p>
-          <ul class="ticks"><li>Criação exclusiva</li><li>Detalhes feitos à mão</li><li>Combina com cada ocasião</li></ul>
-          <a class="lnk" href="https://wa.me/5513997400196?text=Ol%C3%A1!%20Quero%20agendar%20nail%20art%20personalizada." target="_blank" rel="noopener noreferrer">Agendar nail art<span class="sr-only"> (abre em nova aba)</span></a>
         </li>
       </ul>
     </section>
@@ -224,10 +214,10 @@
       <h2 class="st-h2" id="t-faq" data-reveal>Perguntas <em>frequentes.</em></h2>
       <!-- TROCAR: ajuste as respostas à realidade do studio -->
       <div class="faq">
-        <details data-reveal><summary>Quanto tempo dura o procedimento?</summary><p>Esmaltação em gel leva cerca de 1h30. Banho de gel e alongamento levam de 2h30 a 3h30, dependendo da nail art.</p></details>
+        <details data-reveal><summary>Quanto tempo dura o procedimento?</summary><p>Esmaltação em gel leva cerca de 1h30. Banho de gel e alongamento levam de 2h30 a 3h30, dependendo da técnica escolhida.</p></details>
         <details data-reveal><summary>Quanto tempo dura o resultado?</summary><p>Em média, de 3 a 4 semanas, variando com a rotina e com o crescimento da unha.</p></details>
         <details data-reveal><summary>Como funciona a manutenção?</summary><p>Recomendamos a manutenção a cada 21 a 30 dias, para preservar o formato, o brilho e a saúde da unha.</p></details>
-        <details data-reveal><summary>Posso escolher qualquer decoração?</summary><p>Sim. Traga uma referência e adaptamos ao formato das suas unhas. Artes muito elaboradas podem ter valor e tempo adicionais.</p></details>
+        <details data-reveal><summary>Qual alongamento escolher: molde F1 ou tips?</summary><p>Na avaliação, indicamos a técnica que combina com o formato das suas unhas e com a sua rotina. Se tiver uma referência, é só enviar.</p></details>
         <details data-reveal><summary>Como funciona o cancelamento?</summary><p>Pedimos aviso com pelo menos 24 horas de antecedência para reagendar sem custo.</p></details>
         <details data-reveal><summary>Quais são as formas de pagamento?</summary><p>Pix, cartão de débito e crédito (consulte o parcelamento) e dinheiro.</p></details>
       </div>
