@@ -9,29 +9,30 @@
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
   <!--
-    TROCAR: fotos em assets/img/studio/, vídeo assets/img/studio/hero.mp4, foto da hero no celular
-    assets/img/studio/hero-mobile.png, referências e estacionamento (Localização), depoimentos reais e respostas do FAQ.
+    TROCAR: fotos em assets/img/studio/ (todas em .webp), vídeo assets/img/studio/hero.mp4, foto da hero no celular
+    assets/img/studio/hero-mobile.webp, referências e estacionamento (Localização), depoimentos reais e respostas do FAQ.
     Enquanto as imagens não existem, cada quadro mostra um degradê no lugar.
     VÍDEO DA HERO (só computador): ele anda junto com o scroll. Para rolar sem travar, exporte com muitos keyframes:
     ffmpeg -i hero.mp4 -c:v libx264 -g 1 -crf 23 -an -movflags +faststart hero-novo.mp4
-    FOTO DA HERO (só celular): pode ser um frame do vídeo:
-    ffmpeg -ss 2 -i hero.mp4 -frames:v 1 -vf "scale=900:-2" hero-mobile.png
+    FOTO DA HERO (só celular), a partir de um frame do vídeo:
+    ffmpeg -ss 2 -i hero.mp4 -frames:v 1 -vf "scale=828:-2" hero-mobile.png
+    cwebp -q 72 hero-mobile.png -o hero-mobile.webp
   -->
 
   <!-- Estado inicial das animações: só com movimento permitido (evita piscar antes do JS) -->
   <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
   <noscript><style>.js [data-reveal], .js [data-in] { opacity: 1 !important; transform: none !important; } .js .st-title__in { visibility: visible !important; transform: none !important; }</style></noscript>
 
+  <!-- Foto da hero no celular: preload do arquivo REAL (webp), só em telas pequenas ou de toque -->
+  <link rel="preload" href="assets/img/studio/hero-mobile.webp" as="image" type="image/webp" fetchpriority="high" media="(max-width: 768px), (pointer: coarse)">
   <link rel="preload" href="assets/fonts/cormorant-upright-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <!-- Foto da hero no celular: só é pré-carregada em telas pequenas ou de toque -->
-  <link rel="preload" href="assets/img/studio/hero-mobile.png" as="image" media="(max-width: 768px), (pointer: coarse)">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="studio.css?v=2">
   <!-- GSAP, ScrollTrigger e Lenis são carregados pelo studio.js, só no computador.
        No celular nenhum deles (nem o vídeo da hero) é baixado. -->
-  <script src="studio.js" defer></script>
+  <script src="studio.js?v=2" defer></script>
 </head>
 
 <body class="page-studio">
@@ -57,8 +58,14 @@
 
   <main>
     <!-- 01 HERO. Computador: vídeo controlado pelo scroll (src entra via studio.js, a partir de data-src).
-         Celular: o <video> é removido e o fundo é a foto assets/img/studio/hero-mobile.png (CSS). -->
+         Celular: o <video> é removido e a foto vem do <picture> abaixo.
+         No computador nenhuma <source> combina com a media query, então o <img> mostra
+         só um GIF transparente de 1px (nada pesado é baixado). -->
     <section class="st-hero" id="inicio" aria-label="Apresentação">
+      <picture class="st-hero__photo">
+        <source srcset="assets/img/studio/hero-mobile.webp" type="image/webp" media="(max-width: 768px), (pointer: coarse)">
+        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="828" height="1472" fetchpriority="high" decoding="async">
+      </picture>
       <video class="st-hero__video" data-src="assets/img/studio/hero.mp4" muted playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>
       <div class="st-hero__shade"></div>
       <div class="st-hero__body">
@@ -80,12 +87,12 @@
       <p class="st-eyebrow" data-reveal>02 — Portfólio</p>
       <h2 class="st-h2" id="t-portfolio" data-reveal>Cada detalhe, <em>de perto.</em></h2>
       <div class="gallery">
-        <figure class="ph g1" data-reveal><img src="assets/img/studio/unha1.png" alt="Unhas alongadas em gel com acabamento rosé, foto macro" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
-        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.png" alt="Unhas com alongamento na tips e detalhes dourados" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento na tips</figcaption></figure>
-        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.png" alt="Unhas com alongamento molde F1 em tom nude brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
-        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.png" alt="Unhas com alongamento molde F1" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
-        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.png" alt="Unhas francesinha em formato amendoado" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
-        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.png" alt="Unhas com banho de gel e acabamento brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+        <figure class="ph g1" data-reveal><img src="assets/img/studio/unha1.webp" alt="Unhas alongadas em gel com acabamento rosé, foto macro" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
+        <figure class="ph g2" data-reveal><img src="assets/img/studio/unha2.webp" alt="Unhas com alongamento na tips e detalhes dourados" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento na tips</figcaption></figure>
+        <figure class="ph g3" data-reveal><img src="assets/img/studio/unha3.webp" alt="Unhas com alongamento molde F1 em tom nude brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
+        <figure class="ph g4" data-reveal><img src="assets/img/studio/unha4.webp" alt="Unhas com alongamento molde F1" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
+        <figure class="ph g5" data-reveal><img src="assets/img/studio/unha5.webp" alt="Unhas francesinha em formato amendoado" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Alongamento molde F1</figcaption></figure>
+        <figure class="ph g6" data-reveal><img src="assets/img/studio/unha6.webp" alt="Unhas com banho de gel e acabamento brilhante" loading="lazy" decoding="async" onerror="this.remove()"><figcaption>Banho de gel</figcaption></figure>
       </div>
     </section>
 
@@ -136,7 +143,7 @@
 
     <!-- 05 SOBRE -->
     <section class="st-sec st-sec--ink about" id="sobre" aria-labelledby="t-sobre">
-      <figure class="ph about__img" data-reveal><img src="assets/img/studio/gabrieli.png" alt="Retrato de Gabrieli Costa" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+      <figure class="ph about__img" data-reveal><img src="assets/img/studio/gabrieli.webp" alt="Retrato de Gabrieli Costa" loading="lazy" decoding="async" onerror="this.remove()"></figure>
       <div class="about__txt">
         <p class="st-eyebrow" data-reveal>05 — Sobre Gabrieli</p>
         <h2 class="st-h2" id="t-sobre" data-reveal>Mãos que cuidam <em>com intenção.</em></h2>
@@ -151,8 +158,8 @@
       <p class="st-eyebrow" data-reveal>06 — Transformações</p>
       <h2 class="st-h2" id="t-trans" data-reveal>Antes e <em>depois.</em></h2>
       <div class="cmp" data-reveal style="--pos:50%">
-        <div class="cmp__layer cmp__after ph"><img src="assets/img/studio/depois.png" alt="Unhas depois do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Depois</b></div>
-        <div class="cmp__layer cmp__before ph"><img src="assets/img/studio/antes.png" alt="Unhas antes do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Antes</b></div>
+        <div class="cmp__layer cmp__after ph"><img src="assets/img/studio/depois.webp" alt="Unhas depois do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Depois</b></div>
+        <div class="cmp__layer cmp__before ph"><img src="assets/img/studio/antes.webp" alt="Unhas antes do procedimento" loading="lazy" decoding="async" onerror="this.remove()"><b>Antes</b></div>
         <span class="cmp__bar" aria-hidden="true"><svg><use href="#spark"/></svg></span>
         <input class="cmp__range" type="range" min="0" max="100" value="50" aria-label="Comparar antes e depois">
       </div>
@@ -175,8 +182,8 @@
         <li class="card card--quote" data-reveal><span class="stars" role="img" aria-label="5 de 5 estrelas">★★★★★</span><blockquote>“Ambiente lindo, tudo muito limpo e organizado. Já agendei a próxima manutenção.”</blockquote><cite>Nome da cliente</cite></li>
       </ul>
       <div class="client-photos">
-        <figure class="ph" data-reveal><img src="assets/img/studio/unha7.png" alt="Cliente mostrando as unhas feitas no studio" loading="lazy" decoding="async" onerror="this.remove()"></figure>
-        <figure class="ph" data-reveal><img src="assets/img/studio/unha8.png" alt="Cliente satisfeita com o resultado" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+        <figure class="ph" data-reveal><img src="assets/img/studio/unha7.webp" alt="Cliente mostrando as unhas feitas no studio" loading="lazy" decoding="async" onerror="this.remove()"></figure>
+        <figure class="ph" data-reveal><img src="assets/img/studio/unha8.webp" alt="Cliente satisfeita com o resultado" loading="lazy" decoding="async" onerror="this.remove()"></figure>
       </div>
     </section>
 

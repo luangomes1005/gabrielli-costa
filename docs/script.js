@@ -1,8 +1,8 @@
 /* ==========================================================================
    Gabrielli Costa — comportamento
    CELULAR (tela até 768px ou toque): caminho leve, sem vídeo, sem GSAP,
-     sem Lenis, sem ScrollTrigger. Hero com FOTO (assets/img/hero-mobile.jpg,
-     aplicada via CSS). Só JS puro + transições em CSS.
+     sem Lenis, sem ScrollTrigger. Hero com FOTO (assets/img/hero-mobile.webp,
+     via <picture> no HTML). Só JS puro + transições em CSS.
    COMPUTADOR: preloader com vídeo de tinta, scroll suave (Lenis), título
      letra por letra e hero com vídeo controlado pelo scroll (GSAP).
      As bibliotecas são carregadas aqui, só nesse caso.
@@ -50,6 +50,11 @@
   const POUR_DURATION = 1.5;
   const POUR_TITLE_DELAY = 900;
 
+  /* Preloader (celular): curto, para não atrasar o LCP */
+  const MOBILE_FONT_WAIT = 800;
+  const MOBILE_PRELOADER_MIN = 250;
+  const MOBILE_PRELOADER_OUT = 250;
+
   const yearEl = $('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
@@ -84,7 +89,7 @@
      ====================================================================== */
   async function initMobile() {
     hero.classList.add('is-static', 'is-lite');
-    if (video) video.remove();            // sem vídeo: nada é baixado; a foto vem do CSS
+    if (video) video.remove();            // sem vídeo: nada é baixado; a foto vem do <picture>
     const pv = $('.preloader__video');
     if (pv) pv.remove();
 
@@ -92,13 +97,13 @@
     if (pre && !reduceMotion.matches) {
       const fontsReady = Promise.race([
         document.fonts ? document.fonts.ready : Promise.resolve(),
-        wait(1500)
+        wait(MOBILE_FONT_WAIT)
       ]);
       pre.classList.add('is-lite');
       requestAnimationFrame(() => pre.classList.add('is-show'));
-      await Promise.all([fontsReady, wait(700)]);
+      await Promise.all([fontsReady, wait(MOBILE_PRELOADER_MIN)]);
       pre.classList.add('is-out');
-      await wait(450);
+      await wait(MOBILE_PRELOADER_OUT);
     }
     if (pre) pre.remove();
     root.classList.remove('is-locked');

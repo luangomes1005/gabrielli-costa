@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gabrielli Costa — estilos (revisão mobile)
+   Gabrielli Costa — estilos (revisão mobile + performance)
    Paleta: vinho → rosa + ouro rosé do logotipo.
    Fontes: Cormorant Upright (nome na hero), Instrument Serif (títulos),
    Hanken Grotesk (navegação e rótulos). Tudo passa pelos tokens em :root.
@@ -227,6 +227,9 @@ a { color: inherit; touch-action: manipulation; }
   background: var(--ink);
   color: var(--blush);
 }
+
+/* Foto do hero (só aparece no celular; no computador fica oculta) */
+.hero__photo { display: none; }
 
 .hero__video {
   position: absolute; inset: 0;
@@ -566,19 +569,23 @@ a { color: inherit; touch-action: manipulation; }
   /* Preloader: só a marca aparecendo e sumindo (sem vídeo, sem máscara) */
   .preloader { will-change: auto; }
   .preloader__video, .preloader__vignette { display: none; }
-  .preloader__logo { transform: translate(-50%, -50%); will-change: auto; transition: opacity 0.6s ease; }
+  .preloader__logo { transform: translate(-50%, -50%); will-change: auto; transition: opacity 0.3s ease; }
   .preloader.is-show .preloader__logo { opacity: 1; }
-  .preloader.is-out { opacity: 0; transition: opacity 0.45s ease; }
+  .preloader.is-out { opacity: 0; transition: opacity 0.25s ease; }
 
-  /* Hero: FOTO no lugar do vídeo (assets/img/hero-mobile.jpg).
-     Ajuste o enquadramento em "background-position" (ex.: center 30%). */
+  /* Hero: FOTO via <picture> (assets/img/hero-mobile.webp) para ter prioridade de carregamento.
+     Ajuste o enquadramento em "object-position" (ex.: center 30%). */
   .hero {
     min-height: 30rem;
     background-color: var(--ink);
-    background-image: url("assets/img/hero-mobile.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  }
+  .hero__photo {
+    display: block;
+    position: absolute; inset: 0;
+  }
+  .hero__photo img {
+    width: 100%; height: 100%; max-width: none;
+    object-fit: cover; object-position: center;
   }
   /* Vídeo e elementos de scroll não existem no celular; tint e vignette
      ficam ativos para dar leitura ao texto sobre a foto */

@@ -1,6 +1,6 @@
 /* Conheça nosso studio — comportamento
    CELULAR (tela até 768px ou toque): caminho leve. Sem vídeo (a hero usa a foto
-     assets/img/studio/hero-mobile.png via CSS), sem GSAP, sem Lenis, sem ScrollTrigger.
+     assets/img/studio/hero-mobile.webp via <picture>), sem GSAP, sem Lenis, sem ScrollTrigger.
      Só JS puro (IntersectionObserver) + transições em CSS. O mapa só carrega ao tocar no botão.
    COMPUTADOR: vídeo da hero no scroll, carrossel do portfólio no scroll, revelações, parallax.
      GSAP, ScrollTrigger e Lenis são carregados aqui, só nesse caso. */
@@ -19,6 +19,14 @@
   const HERO_SCROLL = 250;    // % da altura da tela que o scroll da hero dura (maior = vídeo mais lento)
   const PF_SCRUB = 0.8;       // suavidade do carrossel (maior = mais "arrastado")
 
+  const idle = (fn) => ('requestIdleCallback' in window
+    ? requestIdleCallback(fn, { timeout: 1500 })
+    : setTimeout(fn, 200));
+  const afterLoad = (fn) => {
+    if (document.readyState === 'complete') idle(fn);
+    else addEventListener('load', () => idle(fn), { once: true });
+  };
+
   const year = $('[data-year]');
   if (year) year.textContent = new Date().getFullYear();
 
@@ -31,25 +39,26 @@
     set();
   }
 
-  /* ---------- Header: cor escura sobre as seções claras (o rodapé é bordô, fica de fora) ---------- */
+  /* ---------- Header: cor escura sobre as seções claras (o rodapé é bordô, fica de fora) ----------
+     Roda depois do carregamento, para não forçar reflow (leitura de medidas) durante o load. */
   const lightSections = $$('.st-sec--blush');
   let themeObserver = null;
   function watchHeaderTheme() {
     if (themeObserver) themeObserver.disconnect();
-    const mid = Math.round(header.offsetHeight / 2);
+    const mid = Math.round(header.getBoundingClientRect().height / 2);
     const active = new Set();
     themeObserver = new IntersectionObserver((entries) => {
       entries.forEach((e) => (e.isIntersecting ? active.add(e.target) : active.delete(e.target)));
       header.classList.toggle('is-on-light', active.size > 0);
-    }, { rootMargin: `-${mid}px 0px -${Math.max(window.innerHeight - mid - 1, 0)}px 0px` });
+    }, { rootMargin: `-${mid}px 0px -${Math.max(innerHeight - mid - 1, 0)}px 0px` });
     lightSections.forEach((s) => themeObserver.observe(s));
   }
-  watchHeaderTheme();
+  afterLoad(watchHeaderTheme);
   let resizeTimer;
   addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(watchHeaderTheme, 200); });
 
   /* ---------- Header: some ao rolar para baixo, volta ao rolar para cima ---------- */
-  let anchorY = scrollY;
+  let anchorY = 0;
   addEventListener('scroll', () => {
     const y = scrollY;
     if (y < 120) { header.classList.remove('is-hidden'); anchorY = y; return; }
@@ -90,7 +99,7 @@
      ====================================================================== */
   function initMobile() {
     const video = $('.st-hero__video');
-    if (video) video.remove();            // sem vídeo: nada é baixado; a foto vem do CSS
+    if (video) video.remove();            // sem vídeo: nada é baixado; a foto vem do <picture>
     setupMapLite();
     initAnchors(null);
 
